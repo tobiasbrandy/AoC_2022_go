@@ -53,9 +53,9 @@ func part2(filePath string) {
 	groupCount := 3
 	total := 0
 
-	internal.ForEachFileLineSet(filePath, groupCount, internal.HandleScanError, func(n int, group []string) {
-		if n != groupCount {
-			internal.HandleMainError(fmt.Errorf("input lines are not divisible by %v. Remainder of %v", groupCount, n))
+	internal.ForEachFileLineSetN(filePath, groupCount, internal.HandleScanError, func(group []string) {
+		if len(group) != groupCount {
+			internal.HandleMainError(fmt.Errorf("input lines are not divisible by %v. Remainder of %v", groupCount, len(group)))
 		}
 
 		groupSets := make([]internal.Set[rune], groupCount - 1)

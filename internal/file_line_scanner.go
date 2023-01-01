@@ -12,11 +12,25 @@ func ForEachFileLine(filePath string, errHandler func(error), f func(string)) {
 	scanner.ForEach(f)
 }
 
-func ForEachFileLineSet(filePath string, setLen int, errHandler func(error), f func(int, []string)) {
+func ForEachFileLineSet(filePath string, errHandler func(error), f func([]string)) {
 	scanner := NewFileLineScanner(filePath, errHandler)
 	defer scanner.Close()
 
-	scanner.ForEachSet(setLen, f)
+	scanner.ForEachSet(f)
+}
+
+func ForEachFileLineSetN(filePath string, setLen int, errHandler func(error), f func([]string)) {
+	scanner := NewFileLineScanner(filePath, errHandler)
+	defer scanner.Close()
+
+	scanner.ForEachSetN(setLen, f)
+}
+
+func ForEachFileLineSetWhile(filePath string, errHandler func(error), test func(line string) bool, f func([]string)) {
+	scanner := NewFileLineScanner(filePath, errHandler)
+	defer scanner.Close()
+
+	scanner.ForEachSetWhile(test, f)
 }
 
 type FileLineScanner struct {
@@ -48,19 +62,11 @@ func (scanner *FileLineScanner) Close() {
 	scanner.file.Close()
 }
 
+// Line functions
+
 func (scanner *FileLineScanner) ForEach(f func(string)) {
 	for scanner.scanner.Scan() {
 		f(scanner.scanner.Text())
-	}
-
-	err := scanner.scanner.Err()
-	if err != nil && scanner.errHandler != nil {
-		scanner.errHandler(err)
-	}
-}
-
-func (scanner *FileLineScanner) ForEachWhile(f func(string) bool) {
-	for scanner.scanner.Scan() && f(scanner.scanner.Text()) {
 	}
 
 	err := scanner.scanner.Err()
@@ -111,7 +117,53 @@ func (scanner *FileLineScanner) Read1() (string, bool) {
 	}
 }
 
-func (scanner *FileLineScanner) ForEachSet(setLen int, f func(int, []string)) {
+// Set Functions
+
+func (scanner *FileLineScanner) ForEachWhile(f func(string) bool) {
+	for scanner.scanner.Scan() && f(scanner.scanner.Text()) {
+	}
+
+	err := scanner.scanner.Err()
+	if err != nil && scanner.errHandler != nil {
+		scanner.errHandler(err)
+	}
+}
+
+func (scanner *FileLineScanner) ForEachSetWhile(test func(line string) bool, f func([]string)) {
+	input := make([]string, 5)
+
+	eof := false
+	for !eof {
+		input = input[0:0]
+
+		for {
+			if !scanner.scanner.Scan() {
+				eof = true
+				break
+			}
+
+			s := scanner.scanner.Text()
+			if test(s) {
+				break
+			}
+
+			input = append(input, s)
+		}
+		
+		f(input)
+	}
+
+	err := scanner.scanner.Err()
+	if err != nil && scanner.errHandler != nil {
+		scanner.errHandler(err)
+	}
+}
+
+func (scanner *FileLineScanner) ForEachSet(f func([]string)) {
+	scanner.ForEachSetWhile(func(line string) bool { return line == "" }, f)
+}
+
+func (scanner *FileLineScanner) ForEachSetN(setLen int, f func([]string)) {
 	input := make([]string, setLen)
 
 	for {
@@ -120,6 +172,6 @@ func (scanner *FileLineScanner) ForEachSet(setLen int, f func(int, []string)) {
 			break
 		}
 
-		f(n, input)
+		f(input[:n])
 	}
 }

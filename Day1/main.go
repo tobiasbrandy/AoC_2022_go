@@ -21,20 +21,19 @@ func part1(inputPath string) {
 	var itemCount []int
 	accum := 0
 
-	internal.ForEachFileLine(inputPath, internal.HandleScanError, func(line string) {
-		if line == "" {
-			itemCount = append(itemCount, accum)
-			accum = 0
-		} else {
+	internal.ForEachFileLineSet(inputPath, internal.HandleScanError, func(lines []string) {
+		for _, line := range lines {
 			count, err := strconv.Atoi(line)
 			if err != nil {
 				internal.HandleMainError(err)
 			}
-
+	
 			accum += count
 		}
+
+		itemCount = append(itemCount, accum)
+		accum = 0
 	})
-	itemCount = append(itemCount, accum)
 
 	sort.Sort(sort.Reverse(sort.IntSlice(itemCount)))
 	topSum := sumInt(itemCount[:3])
