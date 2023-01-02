@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"regexp"
 	"sort"
-	"strconv"
 	"strings"
 
 	"github.com/gammazero/deque"
@@ -36,11 +35,7 @@ func parseUpdateInput(input string) func(int) int {
 		return func(old int) int { return old }
 	}
 
-	val, err := strconv.Atoi(input)
-	if err != nil {
-		internal.HandleMainError(err)
-	}
-
+	val := internal.ParseInt(input)
 	return func(_ int) int { return val }
 }
 
@@ -52,11 +47,7 @@ func parseMonkey(input string) *Monkey {
 	itemsS := strings.Split(monkeyInfo["items"], ", ")
 	items := deque.New[int](len(itemsS))
 	for _, itemS := range itemsS {
-		item, err := strconv.Atoi(itemS)
-		if err != nil {
-			internal.HandleMainError(err)
-		}
-		items.PushBack(item)
+		items.PushBack(internal.ParseInt(itemS))
 	}
 
 	// Parse update
@@ -80,20 +71,9 @@ func parseMonkey(input string) *Monkey {
 	update := func(old int) int { return updateOp(updateL(old), updateR(old)) }
 
 	// Parse throwTo
-	divisor, err := strconv.Atoi(monkeyInfo["test"])
-	if err != nil {
-		internal.HandleMainError(err)
-	}
-
-	throwTrue, err := strconv.Atoi(monkeyInfo["throwTrue"])
-	if err != nil {
-		internal.HandleMainError(err)
-	}
-
-	throwFalse, err := strconv.Atoi(monkeyInfo["throwFalse"])
-	if err != nil {
-		internal.HandleMainError(err)
-	}
+	divisor := internal.ParseInt(monkeyInfo["test"])
+	throwTrue := internal.ParseInt(monkeyInfo["throwTrue"])
+	throwFalse := internal.ParseInt(monkeyInfo["throwFalse"])
 
 	throwTo := func(item int) int {
 		if item%divisor == 0 {

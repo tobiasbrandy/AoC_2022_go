@@ -5,7 +5,6 @@ import (
 
 	"flag"
 	"fmt"
-	"strconv"
 	"strings"
 )
 
@@ -22,10 +21,10 @@ func solve(filePath string, part int) {
 		int1l, int1r := split2(int1, '-')
 		int2l, int2r := split2(int2, '-')
 
-		l1, _ := strconv.Atoi(int1l)
-		r1, _ := strconv.Atoi(int1r)
-		l2, _ := strconv.Atoi(int2l)
-		r2, _ := strconv.Atoi(int2r)
+		l1 := internal.ParseInt(int1l)
+		r1 := internal.ParseInt(int1r)
+		l2 := internal.ParseInt(int2l)
+		r2 := internal.ParseInt(int2r)
 
 		if part == 1 {
 			// Fully overlap

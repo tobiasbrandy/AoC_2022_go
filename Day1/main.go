@@ -6,7 +6,6 @@ import (
 	"flag"
 	"fmt"
 	"sort"
-	"strconv"
 )
 
 func sumInt(arr []int) int {
@@ -23,12 +22,7 @@ func part1(inputPath string) {
 
 	internal.ForEachFileLineSet(inputPath, internal.HandleScanError, func(lines []string) {
 		for _, line := range lines {
-			count, err := strconv.Atoi(line)
-			if err != nil {
-				internal.HandleMainError(err)
-			}
-	
-			accum += count
+			accum += internal.ParseInt(line)	
 		}
 
 		itemCount = append(itemCount, accum)

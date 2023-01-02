@@ -3,7 +3,6 @@ package main
 import (
 	"tobiasbrandy.com/aoc/2022/internal"
 
-	"strconv"
 	"flag"
 	"fmt"
 )
@@ -31,10 +30,7 @@ func solve(filePath string, part int) {
 	internal.ForEachFileLine(filePath, internal.HandleScanError, func(line string) {
 		// Parse
 		cmd := []rune(line[0:1])[0]
-		count, err := strconv.Atoi(line[2:])
-		if err != nil {
-			internal.HandleMainError(err)
-		}
+		count := internal.ParseInt(line[2:])
 
 		// Move head
 		for i := 0; i < count; i++ {

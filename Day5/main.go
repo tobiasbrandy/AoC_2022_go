@@ -4,7 +4,6 @@ import (
 	"tobiasbrandy.com/aoc/2022/internal"
 
 	"regexp"
-	"strconv"
 	"errors"
 	"flag"
 	"fmt"
@@ -63,9 +62,9 @@ func solve(filePath string, part int) {
 
 	scanner.ForEach(func(line string) {
 		move := moveRegex.FindStringSubmatch(line)
-		count, _ := strconv.Atoi(move[1])
-		init, _ := strconv.Atoi(move[2])
-		target, _ := strconv.Atoi(move[3])
+		count := internal.ParseInt(move[1])
+		init := internal.ParseInt(move[2])
+		target := internal.ParseInt(move[3])
 
 		stackInit := stacks[init-1]
 		stackTarget := stacks[target-1]

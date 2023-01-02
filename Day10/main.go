@@ -7,7 +7,6 @@ import (
 	"os"
 	"flag"
 	"fmt"
-	"strconv"
 	"strings"
 )
 
@@ -73,10 +72,7 @@ func solve(filePath string, part int) {
 			render(s)
 
 		case strings.HasPrefix(line, "addx "):
-			count, err := strconv.Atoi(line[len("addx "):])
-			if err != nil {
-				internal.HandleMainError(err)
-			}
+			count := internal.ParseInt(line[len("addx "):])
 
 			render(s)
 			render(s)
