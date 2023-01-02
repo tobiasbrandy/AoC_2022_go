@@ -1,16 +1,16 @@
 package main
 
 import (
+	"tobiasbrandy.com/aoc/2022/internal"
+
+	"flag"
+	"fmt"
 	"regexp"
 	"sort"
 	"strconv"
 	"strings"
 
 	"github.com/gammazero/deque"
-	"tobiasbrandy.com/aoc/2022/internal"
-
-	"flag"
-	"fmt"
 )
 
 type Monkey struct {
