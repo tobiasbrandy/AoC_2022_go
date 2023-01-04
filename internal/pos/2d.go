@@ -1,6 +1,10 @@
 package pos
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/tobiasbrandy/AoC_2022_go/internal/mathext"
+)
 
 type D2 struct {
 	X, Y int
@@ -17,6 +21,10 @@ func (p D2) Neighbours4() [4]D2 {
 		{p.X, p.Y - 1},
 		{p.X, p.Y + 1},
 	}
+}
+
+func (p D2) Distance1(o D2) int {
+	return mathext.IntAbs(p.X - o.X) + mathext.IntAbs(p.Y - o.Y)
 }
 
 func (p D2) String() string {
