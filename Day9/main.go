@@ -8,12 +8,9 @@ import (
 	"github.com/tobiasbrandy/AoC_2022_go/internal/fileline"
 	"github.com/tobiasbrandy/AoC_2022_go/internal/mathext"
 	"github.com/tobiasbrandy/AoC_2022_go/internal/parse"
+	"github.com/tobiasbrandy/AoC_2022_go/internal/pos"
 	"github.com/tobiasbrandy/AoC_2022_go/internal/set"
 )
-
-type Pos2D struct {
-	x, y int
-}
 
 func solve(filePath string, part int) {
 	var nodeCount int
@@ -24,11 +21,11 @@ func solve(filePath string, part int) {
 	}
 
 	// Nodes implicitly initialized on {0, 0}
-	nodes := make([]Pos2D, nodeCount)
+	nodes := make([]pos.D2, nodeCount)
 	head := &nodes[0]
 	tail := &nodes[nodeCount-1]
 
-	tailPosCache := set.Set[Pos2D]{}
+	tailPosCache := set.Set[pos.D2]{}
 	tailPosCache.Add(*tail)
 
 	fileline.ForEach(filePath, errexit.HandleScanError, func(line string) {
@@ -40,13 +37,13 @@ func solve(filePath string, part int) {
 		for i := 0; i < count; i++ {
 			switch cmd {
 			case 'R':
-				head.x++
+				head.X++
 			case 'L':
-				head.x--
+				head.X--
 			case 'U':
-				head.y++
+				head.Y++
 			case 'D':
-				head.y--
+				head.Y--
 			default:
 				errexit.HandleMainError(fmt.Errorf("invalid move direction %v", cmd))
 			}
@@ -55,20 +52,20 @@ func solve(filePath string, part int) {
 				prev := &nodes[i-1]
 				curr := &nodes[i]
 
-				dx := prev.x - curr.x
-				dy := prev.y - curr.y
+				dx := prev.X - curr.X
+				dy := prev.Y - curr.Y
 				mdx := mathext.IntAbs(dx)
 				mdy := mathext.IntAbs(dy)
 
 				if mdx > 1 {
-					curr.x += mathext.Sign(dx)
+					curr.X += mathext.Sign(dx)
 					if mdy > 0 {
-						curr.y += mathext.Sign(dy)
+						curr.Y += mathext.Sign(dy)
 					}
 				} else if mdy > 1 {
-					curr.y += mathext.Sign(dy)
+					curr.Y += mathext.Sign(dy)
 					if mdx > 0 {
-						curr.x += mathext.Sign(dx)
+						curr.X += mathext.Sign(dx)
 					}
 				}
 			}

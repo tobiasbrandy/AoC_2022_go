@@ -9,24 +9,21 @@ import (
 	"github.com/tobiasbrandy/AoC_2022_go/internal/fileline"
 	"github.com/tobiasbrandy/AoC_2022_go/internal/mathext"
 	"github.com/tobiasbrandy/AoC_2022_go/internal/parse"
+	"github.com/tobiasbrandy/AoC_2022_go/internal/pos"
 	"github.com/tobiasbrandy/AoC_2022_go/internal/set"
 )
 
-type Pos2D struct {
-	x, y int
-}
-
-func parseNode(node string) Pos2D {
+func parseNode(node string) pos.D2 {
 	coords := strings.Split(node, ",")
-	return Pos2D{
+	return pos.New2D(
 		parse.Int(coords[0]),
 		parse.Int(coords[1]),
-	}
+	)
 }
 
 func solve(filePath string, part int) {
-	source := Pos2D{500, 0}
-	rockSet := set.Set[Pos2D]{}
+	source := pos.New2D(500, 0)
+	rockSet := set.Set[pos.D2]{}
 	maxY := 0
 
 	// Build initial walls
@@ -34,25 +31,25 @@ func solve(filePath string, part int) {
 		nodes := strings.Split(line, " -> ")
 		prev := parseNode(nodes[0])
 		rockSet.Add(prev)
-		if prev.y > maxY {
-			maxY = prev.y
+		if prev.Y > maxY {
+			maxY = prev.Y
 		}
 
 		for _, node := range nodes[1:] {
 			curr := parseNode(node)
-			if curr.y > maxY {
-				maxY = curr.y
+			if curr.Y > maxY {
+				maxY = curr.Y
 			}
 
-			if curr.x == prev.x {
-				dir := mathext.Sign(curr.y - prev.y)
-				for i := prev.y + dir; i != curr.y; i += dir {
-					rockSet.Add(Pos2D{curr.x, i})
+			if curr.X == prev.X {
+				dir := mathext.Sign(curr.Y - prev.Y)
+				for i := prev.Y + dir; i != curr.Y; i += dir {
+					rockSet.Add(pos.New2D(curr.X, i))
 				}
-			} else if curr.y == prev.y {
-				dir := mathext.Sign(curr.x - prev.x)
-				for i := prev.x + dir; i != curr.x; i += dir {
-					rockSet.Add(Pos2D{i, curr.y})
+			} else if curr.Y == prev.Y {
+				dir := mathext.Sign(curr.X - prev.X)
+				for i := prev.X + dir; i != curr.X; i += dir {
+					rockSet.Add(pos.New2D(i, curr.Y))
 				}
 			} else {
 				errexit.HandleMainError(fmt.Errorf("rock path not in a straight line: prev=%v, curr=%v", prev, curr))
@@ -72,16 +69,16 @@ func solve(filePath string, part int) {
 	for {
 		curr := source
 
-		for curr.y < maxY {
-			if part == 2 && curr.y+1 == maxY {
+		for curr.Y < maxY {
+			if part == 2 && curr.Y+1 == maxY {
 				// Sand hit floor
 				rockSet.Add(curr)
 				break
-			} else if test := (Pos2D{curr.x, curr.y + 1}); !rockSet.Contains(test) {
+			} else if test := (pos.New2D(curr.X, curr.Y+1)); !rockSet.Contains(test) {
 				curr = test
-			} else if test := (Pos2D{curr.x - 1, curr.y + 1}); !rockSet.Contains(test) {
+			} else if test := (pos.New2D(curr.X-1, curr.Y+1)); !rockSet.Contains(test) {
 				curr = test
-			} else if test := (Pos2D{curr.x + 1, curr.y + 1}); !rockSet.Contains(test) {
+			} else if test := (pos.New2D(curr.X+1, curr.Y+1)); !rockSet.Contains(test) {
 				curr = test
 			} else {
 				// Put sand to rest as rock
@@ -90,7 +87,7 @@ func solve(filePath string, part int) {
 			}
 		}
 
-		infiniteFlow := curr.y >= maxY
+		infiniteFlow := curr.Y >= maxY
 		sourceBlocked := curr == source
 		if infiniteFlow || sourceBlocked {
 			if sourceBlocked {
