@@ -1,10 +1,11 @@
 package main
 
 import (
-	"tobiasbrandy.com/aoc/2022/internal"
-
 	"flag"
 	"fmt"
+
+	"github.com/tobiasbrandy/AoC_2022_go/internal/errexit"
+	"github.com/tobiasbrandy/AoC_2022_go/internal/fileline"
 
 	"github.com/gammazero/deque"
 )
@@ -29,7 +30,7 @@ func solve(filePath string, part int) {
 	var end Pos2D
 
 	row := 0
-	internal.ForEachFileLine(filePath, internal.HandleScanError, func(line string) {
+	fileline.ForEach(filePath, errexit.HandleScanError, func(line string) {
 		heights = append(heights, make([]int, len(line)))
 
 		for col, level := range line {
@@ -53,20 +54,20 @@ func solve(filePath string, part int) {
 	width := len(heights)
 	height := len(heights[0])
 
-	shortestLen := width*height
+	shortestLen := width * height
 
 	for _, start := range starts {
 		visited := make(map[Pos2D]int, width*height) // How many steps to get there
 		visited[start] = 0
-	
+
 		processQueue := &deque.Deque[Pos2D]{} // DFS
 		processQueue.PushBack(start)
-	
+
 		for processQueue.Len() > 0 {
 			pos := processQueue.PopFront()
 			h := heights[pos.x][pos.y]
 			steps := visited[pos] + 1
-	
+
 			for _, n := range pos.Neighbours4() {
 				if n.x >= 0 && n.x < width && n.y >= 0 && n.y < height && heights[n.x][n.y] <= h+1 { // Inbounds and height
 					nSteps, ok := visited[n]
@@ -94,7 +95,7 @@ func main() {
 	flag.Parse()
 
 	if *part != 1 && *part != 2 {
-		internal.HandleArgsError(fmt.Errorf("no part %v exists in challenge", *part))
+		errexit.HandleArgsError(fmt.Errorf("no part %v exists in challenge", *part))
 	}
 
 	solve(*inputPath, *part)

@@ -1,4 +1,4 @@
-package internal
+package set
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 
 type Set[T comparable] map[T]struct{}
 
-func NewSet[T comparable](capacity int) Set[T] {
+func New[T comparable](capacity int) Set[T] {
 	return make(map[T]struct{}, capacity)
 }
 

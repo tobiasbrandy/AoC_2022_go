@@ -1,10 +1,11 @@
 package main
 
 import (
-	"tobiasbrandy.com/aoc/2022/internal"
-
 	"flag"
 	"fmt"
+
+	"github.com/tobiasbrandy/AoC_2022_go/internal/errexit"
+	"github.com/tobiasbrandy/AoC_2022_go/internal/fileline"
 )
 
 type RPSMove int
@@ -42,7 +43,7 @@ func (move RPSMove) LosesTo() RPSMove {
 func part1(inputPath string) {
 	score := 0
 
-	internal.ForEachFileLine(inputPath, internal.HandleScanError, func(line string) {
+	fileline.ForEach(inputPath, errexit.HandleScanError, func(line string) {
 		other := RPSMove((line[0] - 'A') + 1)
 
 		var you RPSMove
@@ -80,6 +81,6 @@ func main() {
 	case 1:
 		part1(*inputPath)
 	default:
-		internal.HandleArgsError(fmt.Errorf("no part %v exists in challenge", *part))
+		errexit.HandleArgsError(fmt.Errorf("no part %v exists in challenge", *part))
 	}
 }

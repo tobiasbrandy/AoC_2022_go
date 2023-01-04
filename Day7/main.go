@@ -1,13 +1,14 @@
 package main
 
 import (
-	"tobiasbrandy.com/aoc/2022/internal"
-
 	"errors"
 	"flag"
 	"fmt"
 	"strconv"
 	"strings"
+
+	"github.com/tobiasbrandy/AoC_2022_go/internal/errexit"
+	"github.com/tobiasbrandy/AoC_2022_go/internal/fileline"
 )
 
 type FileSystem struct {
@@ -53,9 +54,9 @@ func (fs *FileSystem) dirSizes(buf *[]int) int {
 	return total
 }
 
-func execCommand(scanner *internal.FileLineScanner, root, cwd *FileSystem, cmd string) {
+func execCommand(scanner *fileline.Scanner, root, cwd *FileSystem, cmd string) {
 	if !strings.HasPrefix(cmd, "$ ") {
-		internal.HandleMainError(fmt.Errorf("command %v doesn't start with '$ '", cmd))
+		errexit.HandleMainError(fmt.Errorf("command %v doesn't start with '$ '", cmd))
 	}
 	cmd = cmd[len("$ "):]
 
@@ -64,11 +65,11 @@ func execCommand(scanner *internal.FileLineScanner, root, cwd *FileSystem, cmd s
 	} else if strings.HasPrefix(cmd, "ls") {
 		execLs(scanner, root, cwd)
 	} else {
-		internal.HandleMainError(fmt.Errorf("command %v doesn't exist", cmd))
+		errexit.HandleMainError(fmt.Errorf("command %v doesn't exist", cmd))
 	}
 }
 
-func execCd(scanner *internal.FileLineScanner, root, cwd *FileSystem, dir string) {
+func execCd(scanner *fileline.Scanner, root, cwd *FileSystem, dir string) {
 	cmd, ok := scanner.Read1()
 	if !ok {
 		// No more commands -> Nothing to do
@@ -88,13 +89,13 @@ func execCd(scanner *internal.FileLineScanner, root, cwd *FileSystem, dir string
 	default:
 		newCwd, ok := cwd.dirs[dir]
 		if !ok {
-			internal.HandleMainError(fmt.Errorf("cd %v: %v doesn't exist", dir, dir))
+			errexit.HandleMainError(fmt.Errorf("cd %v: %v doesn't exist", dir, dir))
 		}
 		execCommand(scanner, root, newCwd, cmd)
 	}
 }
 
-func execLs(scanner *internal.FileLineScanner, root, cwd *FileSystem) {
+func execLs(scanner *fileline.Scanner, root, cwd *FileSystem) {
 	hasNextCmd := false
 	var nextCmd string
 
@@ -114,12 +115,12 @@ func execLs(scanner *internal.FileLineScanner, root, cwd *FileSystem) {
 		} else { // file
 			endIdx := strings.IndexRune(line, ' ')
 			if endIdx == -1 {
-				internal.HandleMainError(fmt.Errorf("%s: malformed ls command output", line))
+				errexit.HandleMainError(fmt.Errorf("%s: malformed ls command output", line))
 			}
 
 			size, err := strconv.Atoi(line[:endIdx])
 			if err != nil {
-				internal.HandleMainError(fmt.Errorf("%s: malformed ls command output: %v", line, err))
+				errexit.HandleMainError(fmt.Errorf("%s: malformed ls command output: %v", line, err))
 			}
 
 			cwd.files[line[endIdx+1:]] = size
@@ -140,12 +141,12 @@ func solve(filePath string, part int) {
 		files:  make(map[string]int),
 	}
 
-	scanner := internal.NewFileLineScanner(filePath, internal.HandleScanError)
+	scanner := fileline.NewScanner(filePath, errexit.HandleScanError)
 	defer scanner.Close()
 
 	cmd, ok := scanner.Read1()
 	if !ok {
-		internal.HandleMainError(errors.New("input is empty"))
+		errexit.HandleMainError(errors.New("input is empty"))
 	}
 	execCommand(scanner, root, root, cmd)
 
@@ -190,7 +191,7 @@ func main() {
 	flag.Parse()
 
 	if *part != 1 && *part != 2 {
-		internal.HandleArgsError(fmt.Errorf("no part %v exists in challenge", *part))
+		errexit.HandleArgsError(fmt.Errorf("no part %v exists in challenge", *part))
 	}
 
 	solve(*inputPath, *part)

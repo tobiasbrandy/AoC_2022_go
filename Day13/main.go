@@ -1,12 +1,12 @@
 package main
 
 import (
-	"sort"
-
-	"tobiasbrandy.com/aoc/2022/internal"
-
 	"flag"
 	"fmt"
+	"sort"
+
+	"github.com/tobiasbrandy/AoC_2022_go/internal/errexit"
+	"github.com/tobiasbrandy/AoC_2022_go/internal/fileline"
 
 	"golang.org/x/exp/constraints"
 )
@@ -58,7 +58,7 @@ func (packet Packet) ParseInt() (n, len int) {
 			break
 		}
 
-		n = n*10 + int(ch - '0')
+		n = n*10 + int(ch-'0')
 		len++
 	}
 
@@ -152,9 +152,9 @@ func part1(filePath string) {
 	total := 0
 
 	index := 1
-	internal.ForEachFileLineSet(filePath, internal.HandleScanError, func(lines []string) {
+	fileline.ForEachSet(filePath, errexit.HandleScanError, func(lines []string) {
 		if len(lines) != 2 {
-			internal.HandleMainError(fmt.Errorf("should only be 2 inputs between each empty line, not %v", len(lines)))
+			errexit.HandleMainError(fmt.Errorf("should only be 2 inputs between each empty line, not %v", len(lines)))
 		}
 
 		left, right := Packet(lines[0]), Packet(lines[1])
@@ -174,7 +174,7 @@ func part2(filePath string) {
 
 	packets := []*Packet{div1, div2}
 
-	internal.ForEachFileLine(filePath, internal.HandleScanError, func(line string) {
+	fileline.ForEach(filePath, errexit.HandleScanError, func(line string) {
 		if line == "" {
 			return
 		}
@@ -214,7 +214,6 @@ func main() {
 	case 2:
 		part2(*inputPath)
 	default:
-		internal.HandleArgsError(fmt.Errorf("no part %v exists in challenge", *part))
+		errexit.HandleArgsError(fmt.Errorf("no part %v exists in challenge", *part))
 	}
 }
-

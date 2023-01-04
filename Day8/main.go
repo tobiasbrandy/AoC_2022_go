@@ -1,17 +1,18 @@
 package main
 
 import (
-	"tobiasbrandy.com/aoc/2022/internal"
-
 	"flag"
 	"fmt"
+
+	"github.com/tobiasbrandy/AoC_2022_go/internal/errexit"
+	"github.com/tobiasbrandy/AoC_2022_go/internal/fileline"
 )
 
 func buildTrees(filePath string) [][]int {
 	var trees [][]int
 
 	row := 0
-	internal.ForEachFileLine(filePath, internal.HandleScanError, func(line string) {
+	fileline.ForEach(filePath, errexit.HandleScanError, func(line string) {
 		trees = append(trees, make([]int, len(line)))
 
 		for col, num := range line {
@@ -165,6 +166,6 @@ func main() {
 	case 2:
 		part2(*inputPath)
 	default:
-		internal.HandleArgsError(fmt.Errorf("no part %v exists in challenge", *part))
+		errexit.HandleArgsError(fmt.Errorf("no part %v exists in challenge", *part))
 	}
 }

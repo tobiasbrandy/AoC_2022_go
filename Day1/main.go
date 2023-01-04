@@ -1,11 +1,13 @@
 package main
 
 import (
-	"tobiasbrandy.com/aoc/2022/internal"
-
 	"flag"
 	"fmt"
 	"sort"
+
+	"github.com/tobiasbrandy/AoC_2022_go/internal/errexit"
+	"github.com/tobiasbrandy/AoC_2022_go/internal/fileline"
+	"github.com/tobiasbrandy/AoC_2022_go/internal/parse"
 )
 
 func sumInt(arr []int) int {
@@ -20,9 +22,9 @@ func part1(inputPath string) {
 	var itemCount []int
 	accum := 0
 
-	internal.ForEachFileLineSet(inputPath, internal.HandleScanError, func(lines []string) {
+	fileline.ForEachSet(inputPath, errexit.HandleScanError, func(lines []string) {
 		for _, line := range lines {
-			accum += internal.ParseInt(line)	
+			accum += parse.Int(line)
 		}
 
 		itemCount = append(itemCount, accum)
@@ -45,6 +47,6 @@ func main() {
 	case 1:
 		part1(*inputPath)
 	default:
-		internal.HandleArgsError(fmt.Errorf("no part %v exists in challenge", *part))
+		errexit.HandleArgsError(fmt.Errorf("no part %v exists in challenge", *part))
 	}
 }

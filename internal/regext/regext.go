@@ -1,17 +1,6 @@
-package internal
+package regext
 
-import (
-	"regexp"
-	"strconv"
-)
-
-func ParseInt(s string) int {
-	n, err := strconv.Atoi(s)
-	if err != nil {
-		HandleMainError(err)
-	}
-	return n
-}
+import "regexp"
 
 func NamedCaptureGroups(regexp *regexp.Regexp, s string) map[string]string {
 	match := regexp.FindStringSubmatch(s)

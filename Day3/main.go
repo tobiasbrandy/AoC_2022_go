@@ -1,35 +1,37 @@
 package main
 
 import (
-	"tobiasbrandy.com/aoc/2022/internal"
-
 	"flag"
 	"fmt"
 	"unicode"
+
+	"github.com/tobiasbrandy/AoC_2022_go/internal/errexit"
+	"github.com/tobiasbrandy/AoC_2022_go/internal/fileline"
+	"github.com/tobiasbrandy/AoC_2022_go/internal/set"
 )
 
 func itemPriority(item rune) int {
 	// We assume items are ascii letters
 	if unicode.IsUpper(item) {
-		return int(item - 'A') + 27
+		return int(item-'A') + 27
 	} else {
-		return int(item - 'a') + 1
+		return int(item-'a') + 1
 	}
 }
 
 func part1(filePath string) {
 	total := 0
 
-	internal.ForEachFileLine(filePath, internal.HandleScanError, func(line string) {
-		ruckDiv := len(line)/2
+	fileline.ForEach(filePath, errexit.HandleScanError, func(line string) {
+		ruckDiv := len(line) / 2
 
 		ruck1 := line[:ruckDiv]
 		ruck2 := line[ruckDiv:]
 
-		ruck1Set := internal.Set[rune]{}
+		ruck1Set := set.Set[rune]{}
 		ruck1Set.AddAll([]rune(ruck1))
 
-		for _, item := range ruck2{
+		for _, item := range ruck2 {
 			if ruck1Set.Contains(item) {
 				total += itemPriority(item)
 				return
@@ -40,7 +42,7 @@ func part1(filePath string) {
 	fmt.Println(total)
 }
 
-func AllSetsContain[T comparable](sets []internal.Set[T], elem T) bool {
+func AllSetsContain[T comparable](sets []set.Set[T], elem T) bool {
 	for _, set := range sets {
 		if !set.Contains(elem) {
 			return false
@@ -53,19 +55,19 @@ func part2(filePath string) {
 	groupCount := 3
 	total := 0
 
-	internal.ForEachFileLineSetN(filePath, groupCount, internal.HandleScanError, func(group []string) {
+	fileline.ForEachSetN(filePath, groupCount, errexit.HandleScanError, func(group []string) {
 		if len(group) != groupCount {
-			internal.HandleMainError(fmt.Errorf("input lines are not divisible by %v. Remainder of %v", groupCount, len(group)))
+			errexit.HandleMainError(fmt.Errorf("input lines are not divisible by %v. Remainder of %v", groupCount, len(group)))
 		}
 
-		groupSets := make([]internal.Set[rune], groupCount - 1)
-		for i := 0; i < groupCount - 1; i++ {
-			set := internal.Set[rune]{}
+		groupSets := make([]set.Set[rune], groupCount-1)
+		for i := 0; i < groupCount-1; i++ {
+			set := set.Set[rune]{}
 			set.AddAll([]rune(group[i]))
 			groupSets[i] = set
 		}
 
-		for _, item := range group[groupCount - 1] {
+		for _, item := range group[groupCount-1] {
 			if AllSetsContain(groupSets, item) {
 				total += itemPriority(item)
 				return
@@ -88,6 +90,6 @@ func main() {
 	case 2:
 		part2(*inputPath)
 	default:
-		internal.HandleArgsError(fmt.Errorf("no part %v exists in challenge", *part))
+		errexit.HandleArgsError(fmt.Errorf("no part %v exists in challenge", *part))
 	}
 }

@@ -1,45 +1,45 @@
-package internal
+package fileline
 
 import (
 	"bufio"
 	"os"
 )
 
-func ForEachFileLine(filePath string, errHandler func(error), f func(string)) {
-	scanner := NewFileLineScanner(filePath, errHandler)
+func ForEach(filePath string, errHandler func(error), f func(string)) {
+	scanner := NewScanner(filePath, errHandler)
 	defer scanner.Close()
 
 	scanner.ForEach(f)
 }
 
-func ForEachFileLineSet(filePath string, errHandler func(error), f func([]string)) {
-	scanner := NewFileLineScanner(filePath, errHandler)
+func ForEachSet(filePath string, errHandler func(error), f func([]string)) {
+	scanner := NewScanner(filePath, errHandler)
 	defer scanner.Close()
 
 	scanner.ForEachSet(f)
 }
 
-func ForEachFileLineSetN(filePath string, setLen int, errHandler func(error), f func([]string)) {
-	scanner := NewFileLineScanner(filePath, errHandler)
+func ForEachSetN(filePath string, setLen int, errHandler func(error), f func([]string)) {
+	scanner := NewScanner(filePath, errHandler)
 	defer scanner.Close()
 
 	scanner.ForEachSetN(setLen, f)
 }
 
-func ForEachFileLineSetWhile(filePath string, errHandler func(error), test func(line string) bool, f func([]string)) {
-	scanner := NewFileLineScanner(filePath, errHandler)
+func ForEachSetWhile(filePath string, errHandler func(error), test func(line string) bool, f func([]string)) {
+	scanner := NewScanner(filePath, errHandler)
 	defer scanner.Close()
 
 	scanner.ForEachSetWhile(test, f)
 }
 
-type FileLineScanner struct {
+type Scanner struct {
 	file       *os.File
 	scanner    *bufio.Scanner
 	errHandler func(error)
 }
 
-func NewFileLineScanner(filePath string, errHandler func(error)) *FileLineScanner {
+func NewScanner(filePath string, errHandler func(error)) *Scanner {
 	file, err := os.Open(filePath)
 	if err != nil {
 		if errHandler != nil {
@@ -51,20 +51,20 @@ func NewFileLineScanner(filePath string, errHandler func(error)) *FileLineScanne
 	scanner := bufio.NewScanner(file)
 	scanner.Split(bufio.ScanLines)
 
-	return &FileLineScanner{
+	return &Scanner{
 		file:       file,
 		scanner:    scanner,
 		errHandler: errHandler,
 	}
 }
 
-func (scanner *FileLineScanner) Close() {
+func (scanner *Scanner) Close() {
 	scanner.file.Close()
 }
 
 // Line functions
 
-func (scanner *FileLineScanner) ForEach(f func(string)) {
+func (scanner *Scanner) ForEach(f func(string)) {
 	for scanner.scanner.Scan() {
 		f(scanner.scanner.Text())
 	}
@@ -75,7 +75,7 @@ func (scanner *FileLineScanner) ForEach(f func(string)) {
 	}
 }
 
-func (scanner *FileLineScanner) ForEachN(n int, f func(string)) int {
+func (scanner *Scanner) ForEachN(n int, f func(string)) int {
 	if n <= 0 {
 		return 0
 	}
@@ -96,7 +96,7 @@ func (scanner *FileLineScanner) ForEachN(n int, f func(string)) int {
 	return total - n
 }
 
-func (scanner *FileLineScanner) ReadN(n int, buf []string) int {
+func (scanner *Scanner) ReadN(n int, buf []string) int {
 	i := 0
 	return scanner.ForEachN(n, func(s string) {
 		buf[i] = s
@@ -104,7 +104,7 @@ func (scanner *FileLineScanner) ReadN(n int, buf []string) int {
 	})
 }
 
-func (scanner *FileLineScanner) Read1() (string, bool) {
+func (scanner *Scanner) Read1() (string, bool) {
 	if scanner.scanner.Scan() {
 		return scanner.scanner.Text(), true
 	} else {
@@ -112,14 +112,14 @@ func (scanner *FileLineScanner) Read1() (string, bool) {
 		if err != nil && scanner.errHandler != nil {
 			scanner.errHandler(err)
 		}
-		
+
 		return "", false
 	}
 }
 
 // Set Functions
 
-func (scanner *FileLineScanner) ForEachWhile(f func(string) bool) {
+func (scanner *Scanner) ForEachWhile(f func(string) bool) {
 	for scanner.scanner.Scan() && f(scanner.scanner.Text()) {
 	}
 
@@ -129,7 +129,7 @@ func (scanner *FileLineScanner) ForEachWhile(f func(string) bool) {
 	}
 }
 
-func (scanner *FileLineScanner) ForEachSetWhile(test func(line string) bool, f func([]string)) {
+func (scanner *Scanner) ForEachSetWhile(test func(line string) bool, f func([]string)) {
 	input := make([]string, 5)
 
 	eof := false
@@ -149,7 +149,7 @@ func (scanner *FileLineScanner) ForEachSetWhile(test func(line string) bool, f f
 
 			input = append(input, s)
 		}
-		
+
 		f(input)
 	}
 
@@ -159,11 +159,11 @@ func (scanner *FileLineScanner) ForEachSetWhile(test func(line string) bool, f f
 	}
 }
 
-func (scanner *FileLineScanner) ForEachSet(f func([]string)) {
+func (scanner *Scanner) ForEachSet(f func([]string)) {
 	scanner.ForEachSetWhile(func(line string) bool { return line == "" }, f)
 }
 
-func (scanner *FileLineScanner) ForEachSetN(setLen int, f func([]string)) {
+func (scanner *Scanner) ForEachSetN(setLen int, f func([]string)) {
 	input := make([]string, setLen)
 
 	for {

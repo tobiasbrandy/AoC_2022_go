@@ -1,11 +1,13 @@
 package main
 
 import (
-	"tobiasbrandy.com/aoc/2022/internal"
-
 	"flag"
 	"fmt"
 	"strings"
+
+	"github.com/tobiasbrandy/AoC_2022_go/internal/errexit"
+	"github.com/tobiasbrandy/AoC_2022_go/internal/fileline"
+	"github.com/tobiasbrandy/AoC_2022_go/internal/parse"
 )
 
 func split2(s string, sep rune) (string, string) {
@@ -16,15 +18,15 @@ func split2(s string, sep rune) (string, string) {
 func solve(filePath string, part int) {
 	total := 0
 
-	internal.ForEachFileLine(filePath, internal.HandleScanError, func(line string) {
+	fileline.ForEach(filePath, errexit.HandleScanError, func(line string) {
 		int1, int2 := split2(line, ',')
 		int1l, int1r := split2(int1, '-')
 		int2l, int2r := split2(int2, '-')
 
-		l1 := internal.ParseInt(int1l)
-		r1 := internal.ParseInt(int1r)
-		l2 := internal.ParseInt(int2l)
-		r2 := internal.ParseInt(int2r)
+		l1 := parse.Int(int1l)
+		r1 := parse.Int(int1r)
+		l2 := parse.Int(int2l)
+		r2 := parse.Int(int2r)
 
 		if part == 1 {
 			// Fully overlap
@@ -49,7 +51,7 @@ func main() {
 	flag.Parse()
 
 	if *part != 1 && *part != 2 {
-		internal.HandleArgsError(fmt.Errorf("no part %v exists in challenge", *part))
+		errexit.HandleArgsError(fmt.Errorf("no part %v exists in challenge", *part))
 	}
 
 	solve(*inputPath, *part)

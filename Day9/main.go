@@ -1,10 +1,14 @@
 package main
 
 import (
-	"tobiasbrandy.com/aoc/2022/internal"
-
 	"flag"
 	"fmt"
+
+	"github.com/tobiasbrandy/AoC_2022_go/internal/errexit"
+	"github.com/tobiasbrandy/AoC_2022_go/internal/fileline"
+	"github.com/tobiasbrandy/AoC_2022_go/internal/mathext"
+	"github.com/tobiasbrandy/AoC_2022_go/internal/parse"
+	"github.com/tobiasbrandy/AoC_2022_go/internal/set"
 )
 
 type Pos2D struct {
@@ -24,13 +28,13 @@ func solve(filePath string, part int) {
 	head := &nodes[0]
 	tail := &nodes[nodeCount-1]
 
-	tailPosCache := internal.Set[Pos2D]{}
+	tailPosCache := set.Set[Pos2D]{}
 	tailPosCache.Add(*tail)
 
-	internal.ForEachFileLine(filePath, internal.HandleScanError, func(line string) {
+	fileline.ForEach(filePath, errexit.HandleScanError, func(line string) {
 		// Parse
 		cmd := []rune(line[0:1])[0]
-		count := internal.ParseInt(line[2:])
+		count := parse.Int(line[2:])
 
 		// Move head
 		for i := 0; i < count; i++ {
@@ -44,7 +48,7 @@ func solve(filePath string, part int) {
 			case 'D':
 				head.y--
 			default:
-				internal.HandleMainError(fmt.Errorf("invalid move direction %v", cmd))
+				errexit.HandleMainError(fmt.Errorf("invalid move direction %v", cmd))
 			}
 
 			for i := 1; i < nodeCount; i++ {
@@ -53,21 +57,21 @@ func solve(filePath string, part int) {
 
 				dx := prev.x - curr.x
 				dy := prev.y - curr.y
-				mdx := internal.IntAbs(dx)
-				mdy := internal.IntAbs(dy)
-	
+				mdx := mathext.IntAbs(dx)
+				mdy := mathext.IntAbs(dy)
+
 				if mdx > 1 {
-					curr.x += internal.Sign(dx)
+					curr.x += mathext.Sign(dx)
 					if mdy > 0 {
-						curr.y += internal.Sign(dy)
+						curr.y += mathext.Sign(dy)
 					}
 				} else if mdy > 1 {
-					curr.y += internal.Sign(dy)
+					curr.y += mathext.Sign(dy)
 					if mdx > 0 {
-						curr.x += internal.Sign(dx)
+						curr.x += mathext.Sign(dx)
 					}
 				}
-			} 
+			}
 
 			tailPosCache.Add(*tail)
 		}
@@ -83,7 +87,7 @@ func main() {
 	flag.Parse()
 
 	if *part != 1 && *part != 2 {
-		internal.HandleArgsError(fmt.Errorf("no part %v exists in challenge", *part))
+		errexit.HandleArgsError(fmt.Errorf("no part %v exists in challenge", *part))
 	}
 
 	solve(*inputPath, *part)

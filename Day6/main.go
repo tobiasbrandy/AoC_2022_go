@@ -1,15 +1,17 @@
 package main
 
 import (
-	"tobiasbrandy.com/aoc/2022/internal"
-
 	"flag"
 	"fmt"
+
+	"github.com/tobiasbrandy/AoC_2022_go/internal/errexit"
+	"github.com/tobiasbrandy/AoC_2022_go/internal/fileline"
+	"github.com/tobiasbrandy/AoC_2022_go/internal/set"
 )
 
 func isUnique[T comparable](slice []T) bool {
 	len := len(slice)
-	set := internal.NewSet[T](len)
+	set := set.New[T](len)
 	set.AddAll(slice)
 	return set.Len() == len
 }
@@ -22,14 +24,14 @@ func solve(filePath string, part int) {
 		uniqueLen = 14
 	}
 
-	internal.ForEachFileLine(filePath, internal.HandleScanError, func(line string) {
+	fileline.ForEach(filePath, errexit.HandleScanError, func(line string) {
 		if len(line) < uniqueLen {
 			fmt.Println("Line is smaller than the required unique characters:", uniqueLen)
 			return
 		}
 
 		for i := range line[4:] {
-			if isUnique([]rune(line[i:i+uniqueLen])) {
+			if isUnique([]rune(line[i : i+uniqueLen])) {
 				fmt.Println(i + uniqueLen)
 				return
 			}
@@ -46,7 +48,7 @@ func main() {
 	flag.Parse()
 
 	if *part != 1 && *part != 2 {
-		internal.HandleArgsError(fmt.Errorf("no part %v exists in challenge", *part))
+		errexit.HandleArgsError(fmt.Errorf("no part %v exists in challenge", *part))
 	}
 
 	solve(*inputPath, *part)

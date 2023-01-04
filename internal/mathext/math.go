@@ -1,4 +1,4 @@
-package internal
+package mathext
 
 import "golang.org/x/exp/constraints"
 

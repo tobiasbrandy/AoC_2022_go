@@ -1,13 +1,15 @@
 package main
 
 import (
-	"tobiasbrandy.com/aoc/2022/internal"
-
-	"io"
-	"os"
 	"flag"
 	"fmt"
+	"io"
+	"os"
 	"strings"
+
+	"github.com/tobiasbrandy/AoC_2022_go/internal/errexit"
+	"github.com/tobiasbrandy/AoC_2022_go/internal/fileline"
+	"github.com/tobiasbrandy/AoC_2022_go/internal/parse"
 )
 
 type State struct {
@@ -66,19 +68,19 @@ func solve(filePath string, part int) {
 		s.out = os.Stdout
 	}
 
-	internal.ForEachFileLine(filePath, internal.HandleScanError, func(line string) {
+	fileline.ForEach(filePath, errexit.HandleScanError, func(line string) {
 		switch {
 		case strings.HasPrefix(line, "noop"):
 			render(s)
 
 		case strings.HasPrefix(line, "addx "):
-			count := internal.ParseInt(line[len("addx "):])
+			count := parse.Int(line[len("addx "):])
 
 			render(s)
 			render(s)
 			s.register += count
 		default:
-			internal.HandleMainError(fmt.Errorf("invalid command %v", line))
+			errexit.HandleMainError(fmt.Errorf("invalid command %v", line))
 		}
 	})
 
@@ -94,7 +96,7 @@ func main() {
 	flag.Parse()
 
 	if *part != 1 && *part != 2 {
-		internal.HandleArgsError(fmt.Errorf("no part %v exists in challenge", *part))
+		errexit.HandleArgsError(fmt.Errorf("no part %v exists in challenge", *part))
 	}
 
 	solve(*inputPath, *part)

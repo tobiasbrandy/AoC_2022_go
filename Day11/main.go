@@ -1,13 +1,16 @@
 package main
 
 import (
-	"tobiasbrandy.com/aoc/2022/internal"
-
 	"flag"
 	"fmt"
 	"regexp"
 	"sort"
 	"strings"
+
+	"github.com/tobiasbrandy/AoC_2022_go/internal/errexit"
+	"github.com/tobiasbrandy/AoC_2022_go/internal/fileline"
+	"github.com/tobiasbrandy/AoC_2022_go/internal/parse"
+	"github.com/tobiasbrandy/AoC_2022_go/internal/regext"
 
 	"github.com/gammazero/deque"
 )
@@ -35,23 +38,23 @@ func parseUpdateInput(input string) func(int) int {
 		return func(old int) int { return old }
 	}
 
-	val := internal.ParseInt(input)
+	val := parse.Int(input)
 	return func(_ int) int { return val }
 }
 
 func parseMonkey(input string) *Monkey {
 	// Parse monkey info
-	monkeyInfo := internal.NamedCaptureGroups(monkeyParser, input)
+	monkeyInfo := regext.NamedCaptureGroups(monkeyParser, input)
 
 	// Parse items
 	itemsS := strings.Split(monkeyInfo["items"], ", ")
 	items := deque.New[int](len(itemsS))
 	for _, itemS := range itemsS {
-		items.PushBack(internal.ParseInt(itemS))
+		items.PushBack(parse.Int(itemS))
 	}
 
 	// Parse update
-	updateInfo := internal.NamedCaptureGroups(updateParser, monkeyInfo["update"])
+	updateInfo := regext.NamedCaptureGroups(updateParser, monkeyInfo["update"])
 
 	var updateOp func(int, int) int
 	switch updateInfo["op"] {
@@ -71,9 +74,9 @@ func parseMonkey(input string) *Monkey {
 	update := func(old int) int { return updateOp(updateL(old), updateR(old)) }
 
 	// Parse throwTo
-	divisor := internal.ParseInt(monkeyInfo["test"])
-	throwTrue := internal.ParseInt(monkeyInfo["throwTrue"])
-	throwFalse := internal.ParseInt(monkeyInfo["throwFalse"])
+	divisor := parse.Int(monkeyInfo["test"])
+	throwTrue := parse.Int(monkeyInfo["throwTrue"])
+	throwFalse := parse.Int(monkeyInfo["throwFalse"])
 
 	throwTo := func(item int) int {
 		if item%divisor == 0 {
@@ -102,7 +105,7 @@ func solve(filePath string, part int) {
 	var monkeys []*Monkey
 
 	// Parse monkeys info
-	internal.ForEachFileLineSet(filePath, internal.HandleScanError, func(lines []string) {
+	fileline.ForEachSet(filePath, errexit.HandleScanError, func(lines []string) {
 		monkeys = append(monkeys, parseMonkey(strings.Join(lines, "\n")))
 	})
 
@@ -151,7 +154,7 @@ func main() {
 	flag.Parse()
 
 	if *part != 1 && *part != 2 {
-		internal.HandleArgsError(fmt.Errorf("no part %v exists in challenge", *part))
+		errexit.HandleArgsError(fmt.Errorf("no part %v exists in challenge", *part))
 	}
 
 	solve(*inputPath, *part)

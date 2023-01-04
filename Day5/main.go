@@ -1,13 +1,15 @@
 package main
 
 import (
-	"tobiasbrandy.com/aoc/2022/internal"
-
-	"regexp"
 	"errors"
 	"flag"
 	"fmt"
+	"regexp"
 	"strings"
+
+	"github.com/tobiasbrandy/AoC_2022_go/internal/errexit"
+	"github.com/tobiasbrandy/AoC_2022_go/internal/fileline"
+	"github.com/tobiasbrandy/AoC_2022_go/internal/parse"
 
 	"github.com/gammazero/deque"
 )
@@ -26,12 +28,12 @@ func parseStackLine(stacks []*deque.Deque[byte], line string) {
 var moveRegex = regexp.MustCompile(`move (\d+) from (\d+) to (\d+)`)
 
 func solve(filePath string, part int) {
-	scanner := internal.NewFileLineScanner(filePath, internal.HandleScanError)
+	scanner := fileline.NewScanner(filePath, errexit.HandleScanError)
 	defer scanner.Close()
 
 	initLine, ok := scanner.Read1()
 	if !ok {
-		internal.HandleMainError(errors.New("input is empty"))
+		errexit.HandleMainError(errors.New("input is empty"))
 	}
 
 	stackCount := (len(initLine) + 1) / 4
@@ -52,7 +54,7 @@ func solve(filePath string, part int) {
 	})
 
 	if line, ok := scanner.Read1(); !ok || line != "" {
-		internal.HandleMainError(errors.New("missing empty line dividing initial state from moves"))
+		errexit.HandleMainError(errors.New("missing empty line dividing initial state from moves"))
 	}
 
 	var tmpStack *deque.Deque[byte]
@@ -62,9 +64,9 @@ func solve(filePath string, part int) {
 
 	scanner.ForEach(func(line string) {
 		move := moveRegex.FindStringSubmatch(line)
-		count := internal.ParseInt(move[1])
-		init := internal.ParseInt(move[2])
-		target := internal.ParseInt(move[3])
+		count := parse.Int(move[1])
+		init := parse.Int(move[2])
+		target := parse.Int(move[3])
 
 		stackInit := stacks[init-1]
 		stackTarget := stacks[target-1]
@@ -72,7 +74,7 @@ func solve(filePath string, part int) {
 		if part == 1 {
 			for i := 0; i < count; i++ {
 				if stackInit.Len() == 0 {
-					internal.HandleMainError(fmt.Errorf("tried to move crate from empty stack %v", init))
+					errexit.HandleMainError(fmt.Errorf("tried to move crate from empty stack %v", init))
 				}
 
 				stackTarget.PushFront(stackInit.PopFront())
@@ -80,12 +82,12 @@ func solve(filePath string, part int) {
 		} else { // part == 2
 			for i := 0; i < count; i++ {
 				if stackInit.Len() == 0 {
-					internal.HandleMainError(fmt.Errorf("tried to move crate from empty stack %v", init))
+					errexit.HandleMainError(fmt.Errorf("tried to move crate from empty stack %v", init))
 				}
-	
+
 				tmpStack.PushFront(stackInit.PopFront())
 			}
-	
+
 			for tmpStack.Len() > 0 {
 				stackTarget.PushFront(tmpStack.PopFront())
 			}
@@ -107,7 +109,7 @@ func main() {
 	flag.Parse()
 
 	if *part != 1 && *part != 2 {
-		internal.HandleArgsError(fmt.Errorf("no part %v exists in challenge", *part))
+		errexit.HandleArgsError(fmt.Errorf("no part %v exists in challenge", *part))
 	}
 
 	solve(*inputPath, *part)
