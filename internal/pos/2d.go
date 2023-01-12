@@ -2,7 +2,9 @@ package pos
 
 import (
 	"fmt"
+	"io"
 
+	"github.com/tobiasbrandy/AoC_2022_go/internal/hashext"
 	"github.com/tobiasbrandy/AoC_2022_go/internal/mathext"
 )
 
@@ -29,4 +31,9 @@ func (p D2) Distance1(o D2) int {
 
 func (p D2) String() string {
 	return fmt.Sprint("(", p.X, ", ", p.Y, ")")
+}
+
+func (p D2) Hash(h io.Writer) {
+	hashext.HashNum(h, p.X)
+	hashext.HashNum(h, p.Y)
 }
