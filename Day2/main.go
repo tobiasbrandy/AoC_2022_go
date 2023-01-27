@@ -1,9 +1,7 @@
-package main
+package day2
 
 import (
-	"flag"
-	"fmt"
-
+	"errors"
 	"github.com/tobiasbrandy/AoC_2022_go/internal/errexit"
 	"github.com/tobiasbrandy/AoC_2022_go/internal/fileline"
 )
@@ -40,7 +38,11 @@ func (move RPSMove) LosesTo() RPSMove {
 	return rpsLoses[move]
 }
 
-func part1(inputPath string) {
+func Solve(inputPath string, part int) any {
+	if part == 1 {
+		errexit.HandleMainError(errors.New("part 1 not implemented :("))
+	}
+
 	score := 0
 
 	fileline.ForEach(inputPath, errexit.HandleScanError, func(line string) {
@@ -68,19 +70,5 @@ func part1(inputPath string) {
 		// Else you lose => score += 0
 	})
 
-	fmt.Println(score)
-}
-
-func main() {
-	inputPath := flag.String("input", "input.txt", "Path to the input file")
-	part := flag.Int("part", 1, "Part number of the AoC challenge")
-
-	flag.Parse()
-
-	switch *part {
-	case 1:
-		part1(*inputPath)
-	default:
-		errexit.HandleArgsError(fmt.Errorf("no part %v exists in challenge", *part))
-	}
+	return score
 }

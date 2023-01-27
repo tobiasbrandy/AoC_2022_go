@@ -1,8 +1,7 @@
-package main
+package day5
 
 import (
 	"errors"
-	"flag"
 	"fmt"
 	"regexp"
 	"strings"
@@ -27,8 +26,8 @@ func parseStackLine(stacks []*deque.Deque[byte], line string) {
 
 var moveRegex = regexp.MustCompile(`move (\d+) from (\d+) to (\d+)`)
 
-func solve(filePath string, part int) {
-	scanner := fileline.NewScanner(filePath, errexit.HandleScanError)
+func Solve(inputPath string, part int) any {
+	scanner := fileline.NewScanner(inputPath, errexit.HandleScanError)
 	defer scanner.Close()
 
 	initLine, ok := scanner.Read1()
@@ -94,23 +93,12 @@ func solve(filePath string, part int) {
 		}
 	})
 
+	builder := strings.Builder{}
 	for _, stack := range stacks {
 		if stack.Len() > 0 {
-			fmt.Print(string(stack.Front()))
+			builder.WriteByte(stack.Front())
 		}
 	}
-	fmt.Println()
-}
 
-func main() {
-	inputPath := flag.String("input", "input.txt", "Path to the input file")
-	part := flag.Int("part", 1, "Part number of the AoC challenge")
-
-	flag.Parse()
-
-	if *part != 1 && *part != 2 {
-		errexit.HandleArgsError(fmt.Errorf("no part %v exists in challenge", *part))
-	}
-
-	solve(*inputPath, *part)
+	return builder.String()
 }

@@ -1,8 +1,6 @@
-package main
+package day11
 
 import (
-	"flag"
-	"fmt"
 	"regexp"
 	"sort"
 	"strings"
@@ -25,11 +23,11 @@ type Monkey struct {
 
 var monkeyParser = regexp.MustCompile(
 	`Monkey \d+:
-  Starting items: (?P<items>(\d+, )*\d+)
-  Operation: new = (?P<update>.+)
-  Test: divisible by (?P<test>\d+)
-    If true: throw to monkey (?P<throwTrue>\d+)
-    If false: throw to monkey (?P<throwFalse>\d+)`)
+ {2}Starting items: (?P<items>(\d+, )*\d+)
+ {2}Operation: new = (?P<update>.+)
+ {2}Test: divisible by (?P<test>\d+)
+ {4}If true: throw to monkey (?P<throwTrue>\d+)
+ {4}If false: throw to monkey (?P<throwFalse>\d+)`)
 
 var updateParser = regexp.MustCompile(`(?P<left>old|\d+) (?P<op>[+*/-]) (?P<right>old|\d+)`)
 
@@ -94,7 +92,7 @@ func parseMonkey(input string) *Monkey {
 	}
 }
 
-func solve(filePath string, part int) {
+func Solve(inputPath string, part int) any {
 	var rounds int
 	if part == 1 {
 		rounds = 20
@@ -105,7 +103,7 @@ func solve(filePath string, part int) {
 	var monkeys []*Monkey
 
 	// Parse monkeys info
-	fileline.ForEachSet(filePath, errexit.HandleScanError, func(lines []string) {
+	fileline.ForEachSet(inputPath, errexit.HandleScanError, func(lines []string) {
 		monkeys = append(monkeys, parseMonkey(strings.Join(lines, "\n")))
 	})
 
@@ -144,18 +142,5 @@ func solve(filePath string, part int) {
 	sort.Slice(monkeys, func(i, j int) bool { return monkeys[i].inspections > monkeys[j].inspections })
 
 	business := uint64(monkeys[0].inspections) * uint64(monkeys[1].inspections)
-	fmt.Println(business)
-}
-
-func main() {
-	inputPath := flag.String("input", "input.txt", "Path to the input file")
-	part := flag.Int("part", 1, "Part number of the AoC challenge")
-
-	flag.Parse()
-
-	if *part != 1 && *part != 2 {
-		errexit.HandleArgsError(fmt.Errorf("no part %v exists in challenge", *part))
-	}
-
-	solve(*inputPath, *part)
+	return business
 }

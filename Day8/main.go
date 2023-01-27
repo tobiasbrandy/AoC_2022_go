@@ -1,9 +1,6 @@
-package main
+package day8
 
 import (
-	"flag"
-	"fmt"
-
 	"github.com/tobiasbrandy/AoC_2022_go/internal/errexit"
 	"github.com/tobiasbrandy/AoC_2022_go/internal/fileline"
 )
@@ -25,8 +22,8 @@ func buildTrees(filePath string) [][]int {
 	return trees
 }
 
-func part1(filePath string) {
-	trees := buildTrees(filePath)
+func Part1(inputPath string) any {
+	trees := buildTrees(inputPath)
 
 	rows := len(trees)
 	cols := len(trees[0])
@@ -97,11 +94,11 @@ func part1(filePath string) {
 		}
 	}
 
-	fmt.Println(totalVisible)
+	return totalVisible
 }
 
-func part2(filePath string) {
-	trees := buildTrees(filePath)
+func Part2(inputPath string) any {
+	trees := buildTrees(inputPath)
 
 	rows := len(trees)
 	cols := len(trees[0])
@@ -151,21 +148,5 @@ func part2(filePath string) {
 		}
 	}
 
-	fmt.Println(maxVisibility)
-}
-
-func main() {
-	inputPath := flag.String("input", "input1.txt", "Path to the input file")
-	part := flag.Int("part", 1, "Part number of the AoC challenge")
-
-	flag.Parse()
-
-	switch *part {
-	case 1:
-		part1(*inputPath)
-	case 2:
-		part2(*inputPath)
-	default:
-		errexit.HandleArgsError(fmt.Errorf("no part %v exists in challenge", *part))
-	}
+	return maxVisibility
 }

@@ -1,10 +1,8 @@
-package main
+package day10
 
 import (
-	"flag"
 	"fmt"
 	"io"
-	"os"
 	"strings"
 
 	"github.com/tobiasbrandy/AoC_2022_go/internal/errexit"
@@ -25,8 +23,8 @@ const (
 	logStep  = 40
 
 	// Part 2
-	width  = 40
-	height = 6
+	width = 40
+	// height = 6
 
 	spriteLen    = 3
 	spriteRadius = spriteLen / 2
@@ -46,17 +44,26 @@ func render(s *State) {
 	hPos := (s.cycle - 1) % width
 
 	if hPos >= s.register-spriteRadius && hPos <= s.register+spriteRadius {
-		fmt.Fprint(s.out, pixelOn)
+		_, err := fmt.Fprint(s.out, pixelOn)
+		if err != nil {
+			errexit.HandleMainError(err)
+		}
 	} else {
-		fmt.Fprint(s.out, pixelOff)
+		_, err := fmt.Fprint(s.out, pixelOff)
+		if err != nil {
+			errexit.HandleMainError(err)
+		}
 	}
 
 	if hPos == width-1 {
-		fmt.Fprintln(s.out)
+		_, err := fmt.Fprintln(s.out)
+		if err != nil {
+			errexit.HandleMainError(err)
+		}
 	}
 }
 
-func solve(filePath string, part int) {
+func Solve(inputPath string, part int) any {
 	s := &State{
 		cycle:    0,
 		register: 1,
@@ -65,10 +72,10 @@ func solve(filePath string, part int) {
 	if part == 1 {
 		s.out = io.Discard
 	} else { // part == 2
-		s.out = os.Stdout
+		s.out = &strings.Builder{}
 	}
 
-	fileline.ForEach(filePath, errexit.HandleScanError, func(line string) {
+	fileline.ForEach(inputPath, errexit.HandleScanError, func(line string) {
 		switch {
 		case strings.HasPrefix(line, "noop"):
 			render(s)
@@ -85,19 +92,8 @@ func solve(filePath string, part int) {
 	})
 
 	if part == 1 {
-		fmt.Println(s.total)
+		return s.total
+	} else { // part == 2
+		return s.out.(*strings.Builder).String()
 	}
-}
-
-func main() {
-	inputPath := flag.String("input", "input.txt", "Path to the input file")
-	part := flag.Int("part", 1, "Part number of the AoC challenge")
-
-	flag.Parse()
-
-	if *part != 1 && *part != 2 {
-		errexit.HandleArgsError(fmt.Errorf("no part %v exists in challenge", *part))
-	}
-
-	solve(*inputPath, *part)
 }

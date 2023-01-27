@@ -1,7 +1,6 @@
-package main
+package day9
 
 import (
-	"flag"
 	"fmt"
 
 	"github.com/tobiasbrandy/AoC_2022_go/internal/errexit"
@@ -12,7 +11,7 @@ import (
 	"github.com/tobiasbrandy/AoC_2022_go/internal/set"
 )
 
-func solve(filePath string, part int) {
+func Solve(inputPath string, part int) any {
 	var nodeCount int
 	if part == 1 {
 		nodeCount = 2
@@ -28,7 +27,7 @@ func solve(filePath string, part int) {
 	tailPosCache := set.Set[pos.D2]{}
 	tailPosCache.Add(*tail)
 
-	fileline.ForEach(filePath, errexit.HandleScanError, func(line string) {
+	fileline.ForEach(inputPath, errexit.HandleScanError, func(line string) {
 		// Parse
 		cmd := []rune(line[0:1])[0]
 		count := parse.Int(line[2:])
@@ -74,18 +73,5 @@ func solve(filePath string, part int) {
 		}
 	})
 
-	fmt.Println(tailPosCache.Len())
-}
-
-func main() {
-	inputPath := flag.String("input", "input.txt", "Path to the input file")
-	part := flag.Int("part", 1, "Part number of the AoC challenge")
-
-	flag.Parse()
-
-	if *part != 1 && *part != 2 {
-		errexit.HandleArgsError(fmt.Errorf("no part %v exists in challenge", *part))
-	}
-
-	solve(*inputPath, *part)
+	return tailPosCache.Len()
 }

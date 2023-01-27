@@ -1,7 +1,6 @@
-package main
+package day3
 
 import (
-	"flag"
 	"fmt"
 	"unicode"
 
@@ -19,10 +18,10 @@ func itemPriority(item rune) int {
 	}
 }
 
-func part1(filePath string) {
+func Part1(inputPath string) any {
 	total := 0
 
-	fileline.ForEach(filePath, errexit.HandleScanError, func(line string) {
+	fileline.ForEach(inputPath, errexit.HandleScanError, func(line string) {
 		ruckDiv := len(line) / 2
 
 		ruck1 := line[:ruckDiv]
@@ -39,57 +38,41 @@ func part1(filePath string) {
 		}
 	})
 
-	fmt.Println(total)
+	return total
 }
 
-func AllSetsContain[T comparable](sets []set.Set[T], elem T) bool {
-	for _, set := range sets {
-		if !set.Contains(elem) {
+func allSetsContain[T comparable](sets []set.Set[T], elem T) bool {
+	for _, s := range sets {
+		if !s.Contains(elem) {
 			return false
 		}
 	}
 	return true
 }
 
-func part2(filePath string) {
+func Part2(inputPath string) any {
 	groupCount := 3
 	total := 0
 
-	fileline.ForEachSetN(filePath, groupCount, errexit.HandleScanError, func(group []string) {
+	fileline.ForEachSetN(inputPath, groupCount, errexit.HandleScanError, func(group []string) {
 		if len(group) != groupCount {
 			errexit.HandleMainError(fmt.Errorf("input lines are not divisible by %v. Remainder of %v", groupCount, len(group)))
 		}
 
 		groupSets := make([]set.Set[rune], groupCount-1)
 		for i := 0; i < groupCount-1; i++ {
-			set := set.Set[rune]{}
-			set.AddAll([]rune(group[i]))
-			groupSets[i] = set
+			s := set.Set[rune]{}
+			s.AddAll([]rune(group[i]))
+			groupSets[i] = s
 		}
 
 		for _, item := range group[groupCount-1] {
-			if AllSetsContain(groupSets, item) {
+			if allSetsContain(groupSets, item) {
 				total += itemPriority(item)
 				return
 			}
 		}
 	})
 
-	fmt.Println(total)
-}
-
-func main() {
-	inputPath := flag.String("input", "input1.txt", "Path to the input file")
-	part := flag.Int("part", 1, "Part number of the AoC challenge")
-
-	flag.Parse()
-
-	switch *part {
-	case 1:
-		part1(*inputPath)
-	case 2:
-		part2(*inputPath)
-	default:
-		errexit.HandleArgsError(fmt.Errorf("no part %v exists in challenge", *part))
-	}
+	return total
 }

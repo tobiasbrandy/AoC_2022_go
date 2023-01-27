@@ -1,9 +1,6 @@
-package main
+package day12
 
 import (
-	"flag"
-	"fmt"
-
 	"github.com/tobiasbrandy/AoC_2022_go/internal/errexit"
 	"github.com/tobiasbrandy/AoC_2022_go/internal/fileline"
 	"github.com/tobiasbrandy/AoC_2022_go/internal/pos"
@@ -11,14 +8,14 @@ import (
 	"github.com/gammazero/deque"
 )
 
-func solve(filePath string, part int) {
+func Solve(inputPath string, part int) any {
 	var heights [][]int
 
 	starts := make([]pos.D2, 1)
 	var end pos.D2
 
 	row := 0
-	fileline.ForEach(filePath, errexit.HandleScanError, func(line string) {
+	fileline.ForEach(inputPath, errexit.HandleScanError, func(line string) {
 		heights = append(heights, make([]int, len(line)))
 
 		for col, level := range line {
@@ -52,11 +49,11 @@ func solve(filePath string, part int) {
 		processQueue.PushBack(start)
 
 		for processQueue.Len() > 0 {
-			pos := processQueue.PopFront()
-			h := heights[pos.X][pos.Y]
-			steps := visited[pos] + 1
+			p := processQueue.PopFront()
+			h := heights[p.X][p.Y]
+			steps := visited[p] + 1
 
-			for _, n := range pos.Neighbours4() {
+			for _, n := range p.Neighbours4() {
 				if n.X >= 0 && n.X < width && n.Y >= 0 && n.Y < height && heights[n.X][n.Y] <= h+1 { // Inbounds and height
 					nSteps, ok := visited[n]
 					if !ok || nSteps > steps {
@@ -67,24 +64,11 @@ func solve(filePath string, part int) {
 			}
 		}
 
-		len, ok := visited[end]
-		if ok && len < shortestLen {
-			shortestLen = len
+		l, ok := visited[end]
+		if ok && l < shortestLen {
+			shortestLen = l
 		}
 	}
 
-	fmt.Println(shortestLen)
-}
-
-func main() {
-	inputPath := flag.String("input", "input.txt", "Path to the input file")
-	part := flag.Int("part", 1, "Part number of the AoC challenge")
-
-	flag.Parse()
-
-	if *part != 1 && *part != 2 {
-		errexit.HandleArgsError(fmt.Errorf("no part %v exists in challenge", *part))
-	}
-
-	solve(*inputPath, *part)
+	return shortestLen
 }

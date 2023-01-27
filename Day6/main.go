@@ -1,7 +1,6 @@
-package main
+package day6
 
 import (
-	"flag"
 	"fmt"
 
 	"github.com/tobiasbrandy/AoC_2022_go/internal/errexit"
@@ -10,13 +9,13 @@ import (
 )
 
 func isUnique[T comparable](slice []T) bool {
-	len := len(slice)
-	set := set.New[T](len)
-	set.AddAll(slice)
-	return set.Len() == len
+	l := len(slice)
+	s := set.New[T](l)
+	s.AddAll(slice)
+	return s.Len() == l
 }
 
-func solve(filePath string, part int) {
+func Solve(inputPath string, part int) any {
 	var uniqueLen int
 	if part == 1 {
 		uniqueLen = 4
@@ -24,32 +23,22 @@ func solve(filePath string, part int) {
 		uniqueLen = 14
 	}
 
-	fileline.ForEach(filePath, errexit.HandleScanError, func(line string) {
+	var ret int
+	fileline.ForEach(inputPath, errexit.HandleScanError, func(line string) {
 		if len(line) < uniqueLen {
-			fmt.Println("Line is smaller than the required unique characters:", uniqueLen)
+			errexit.HandleMainError(fmt.Errorf("line is smaller than the required unique characters: %d", uniqueLen))
 			return
 		}
 
 		for i := range line[4:] {
 			if isUnique([]rune(line[i : i+uniqueLen])) {
-				fmt.Println(i + uniqueLen)
+				ret = i + uniqueLen
 				return
 			}
 		}
 
-		fmt.Println("No unique set of", uniqueLen, "characters")
+		errexit.HandleMainError(fmt.Errorf("no unique set of %d characters", uniqueLen))
 	})
-}
 
-func main() {
-	inputPath := flag.String("input", "input.txt", "Path to the input file")
-	part := flag.Int("part", 1, "Part number of the AoC challenge")
-
-	flag.Parse()
-
-	if *part != 1 && *part != 2 {
-		errexit.HandleArgsError(fmt.Errorf("no part %v exists in challenge", *part))
-	}
-
-	solve(*inputPath, *part)
+	return ret
 }

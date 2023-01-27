@@ -1,8 +1,6 @@
-package main
+package day4
 
 import (
-	"flag"
-	"fmt"
 	"strings"
 
 	"github.com/tobiasbrandy/AoC_2022_go/internal/errexit"
@@ -15,10 +13,10 @@ func split2(s string, sep rune) (string, string) {
 	return s[:sepIdx], s[sepIdx+1:]
 }
 
-func solve(filePath string, part int) {
+func Solve(inputPath string, part int) any {
 	total := 0
 
-	fileline.ForEach(filePath, errexit.HandleScanError, func(line string) {
+	fileline.ForEach(inputPath, errexit.HandleScanError, func(line string) {
 		int1, int2 := split2(line, ',')
 		int1l, int1r := split2(int1, '-')
 		int2l, int2r := split2(int2, '-')
@@ -41,18 +39,5 @@ func solve(filePath string, part int) {
 		}
 	})
 
-	fmt.Println(total)
-}
-
-func main() {
-	inputPath := flag.String("input", "input.txt", "Path to the input file")
-	part := flag.Int("part", 1, "Part number of the AoC challenge")
-
-	flag.Parse()
-
-	if *part != 1 && *part != 2 {
-		errexit.HandleArgsError(fmt.Errorf("no part %v exists in challenge", *part))
-	}
-
-	solve(*inputPath, *part)
+	return total
 }

@@ -1,7 +1,6 @@
-package main
+package day17
 
 import (
-	"flag"
 	"fmt"
 	"hash/maphash"
 	"io"
@@ -189,8 +188,8 @@ func (bs *BoardSurface) Contains(x, y int) bool {
 func (bs *BoardSurface) UpdateBottom() {
 	top := make([]int, bs.width)
 
-	len := bs.board.Len()
-	for y := 0; y < len; y++ {
+	l := bs.board.Len()
+	for y := 0; y < l; y++ {
 		row := bs.board.At(y)
 
 		full := true
@@ -204,7 +203,7 @@ func (bs *BoardSurface) UpdateBottom() {
 		}
 
 		if full {
-			min := len + 1
+			min := l + 1
 			for i := 0; i < bs.width; i++ {
 				if min > top[i] {
 					min = top[i]
@@ -240,9 +239,9 @@ func (bs *BoardSurface) Add(x, y int) {
 		return // Not on surface
 	}
 
-	len := bs.board.Len()
-	if y >= len {
-		for i := len; i <= y; i++ {
+	l := bs.board.Len()
+	if y >= l {
+		for i := l; i <= y; i++ {
 			bs.board.PushBack(make([]bool, bs.width))
 		}
 	}
@@ -254,8 +253,8 @@ func (bs *BoardSurface) Hash(h io.Writer) {
 	// Hash independent of bottom position
 	hashext.HashNum(h, bs.width)
 
-	len := bs.board.Len()
-	for i := 0; i < len; i++ {
+	l := bs.board.Len()
+	for i := 0; i < l; i++ {
 		hashext.HashNum(h, bs.board.At(i))
 	}
 }
@@ -291,7 +290,7 @@ func simStateHash(h *maphash.Hash, bs *BoardSurface, cmd, rock int) uint64 {
 	return ret
 }
 
-func solve(filePath string, part int) {
+func Solve(inputPath string, part int) any {
 	const (
 		sepY int = 3
 		sepX int = 2
@@ -306,11 +305,16 @@ func solve(filePath string, part int) {
 		totalRocks = 1_000_000_000_000
 	}
 
-	file, err := os.Open(filePath)
+	file, err := os.Open(inputPath)
 	if err != nil {
 		errexit.HandleScanError(err)
 	}
-	defer file.Close()
+	defer func(file *os.File) {
+		err := file.Close()
+		if err != nil {
+			errexit.HandleScanError(err)
+		}
+	}(file)
 
 	cmds, err := io.ReadAll(file)
 	if err != nil {
@@ -320,7 +324,7 @@ func solve(filePath string, part int) {
 	rocksC, cmdsC := len(rocks), len(cmds)
 	maxY := -1
 
-	var board *BoardSurface = NewBoardSurface(boardWidth, 0, 1+sepY)
+	var board = NewBoardSurface(boardWidth, 0, 1+sepY)
 
 	var h maphash.Hash
 	cycleCache := make(map[uint64]int)
@@ -402,18 +406,5 @@ func solve(filePath string, part int) {
 	}
 
 	height := maxY + 1
-	fmt.Println(height)
-}
-
-func main() {
-	inputPath := flag.String("input", "input.txt", "Path to the input file")
-	part := flag.Int("part", 1, "Part number of the AoC challenge")
-
-	flag.Parse()
-
-	if *part != 1 && *part != 2 {
-		errexit.HandleArgsError(fmt.Errorf("no part %v exists in challenge", *part))
-	}
-
-	solve(*inputPath, *part)
+	return height
 }

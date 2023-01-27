@@ -1,8 +1,7 @@
-package main
+package day7
 
 import (
 	"errors"
-	"flag"
 	"fmt"
 	"strconv"
 	"strings"
@@ -134,14 +133,14 @@ func execLs(scanner *fileline.Scanner, root, cwd *FileSystem) {
 	}
 }
 
-func solve(filePath string, part int) {
+func Solve(inputPath string, part int) any {
 	root := &FileSystem{
 		parent: nil,
 		dirs:   make(map[string]*FileSystem),
 		files:  make(map[string]int),
 	}
 
-	scanner := fileline.NewScanner(filePath, errexit.HandleScanError)
+	scanner := fileline.NewScanner(inputPath, errexit.HandleScanError)
 	defer scanner.Close()
 
 	cmd, ok := scanner.Read1()
@@ -163,8 +162,7 @@ func solve(filePath string, part int) {
 			}
 		}
 
-		fmt.Println(total)
-		return
+		return total
 	}
 
 	// part == 2
@@ -181,18 +179,5 @@ func solve(filePath string, part int) {
 		}
 	}
 
-	fmt.Println(minDelete)
-}
-
-func main() {
-	inputPath := flag.String("input", "input.txt", "Path to the input file")
-	part := flag.Int("part", 1, "Part number of the AoC challenge")
-
-	flag.Parse()
-
-	if *part != 1 && *part != 2 {
-		errexit.HandleArgsError(fmt.Errorf("no part %v exists in challenge", *part))
-	}
-
-	solve(*inputPath, *part)
+	return minDelete
 }

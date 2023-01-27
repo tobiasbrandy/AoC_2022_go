@@ -1,7 +1,6 @@
-package main
+package day13
 
 import (
-	"flag"
 	"fmt"
 	"sort"
 
@@ -143,16 +142,16 @@ func packetCompare(left, right Packet) (ord Ord, newLeft, newRight Packet) {
 	}
 }
 
-func (left Packet) Less(right Packet) bool {
-	ord, _, _ := packetCompare(left, right)
+func (packet Packet) Less(right Packet) bool {
+	ord, _, _ := packetCompare(packet, right)
 	return ord == LT
 }
 
-func part1(filePath string) {
+func Part1(inputPath string) any {
 	total := 0
 
 	index := 1
-	fileline.ForEachSet(filePath, errexit.HandleScanError, func(lines []string) {
+	fileline.ForEachSet(inputPath, errexit.HandleScanError, func(lines []string) {
 		if len(lines) != 2 {
 			errexit.HandleMainError(fmt.Errorf("should only be 2 inputs between each empty line, not %v", len(lines)))
 		}
@@ -165,16 +164,16 @@ func part1(filePath string) {
 		index++
 	})
 
-	fmt.Println(total)
+	return total
 }
 
-func part2(filePath string) {
+func Part2(inputPath string) any {
 	div1 := &Packet{'[', '[', '2', ']', ']'}
 	div2 := &Packet{'[', '[', '6', ']', ']'}
 
 	packets := []*Packet{div1, div2}
 
-	fileline.ForEach(filePath, errexit.HandleScanError, func(line string) {
+	fileline.ForEach(inputPath, errexit.HandleScanError, func(line string) {
 		if line == "" {
 			return
 		}
@@ -199,21 +198,5 @@ func part2(filePath string) {
 	}
 
 	total := div1Idx * div2Idx
-	fmt.Println(total)
-}
-
-func main() {
-	inputPath := flag.String("input", "input.txt", "Path to the input file")
-	part := flag.Int("part", 1, "Part number of the AoC challenge")
-
-	flag.Parse()
-
-	switch *part {
-	case 1:
-		part1(*inputPath)
-	case 2:
-		part2(*inputPath)
-	default:
-		errexit.HandleArgsError(fmt.Errorf("no part %v exists in challenge", *part))
-	}
+	return total
 }

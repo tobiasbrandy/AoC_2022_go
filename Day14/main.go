@@ -1,7 +1,6 @@
-package main
+package day14
 
 import (
-	"flag"
 	"fmt"
 	"strings"
 
@@ -21,13 +20,13 @@ func parseNode(node string) pos.D2 {
 	)
 }
 
-func solve(filePath string, part int) {
+func Solve(inputPath string, part int) any {
 	source := pos.New2D(500, 0)
 	rockSet := set.Set[pos.D2]{}
 	maxY := 0
 
 	// Build initial walls
-	fileline.ForEach(filePath, errexit.HandleScanError, func(line string) {
+	fileline.ForEach(inputPath, errexit.HandleScanError, func(line string) {
 		nodes := strings.Split(line, " -> ")
 		prev := parseNode(nodes[0])
 		rockSet.Add(prev)
@@ -99,18 +98,5 @@ func solve(filePath string, part int) {
 		totalSand++
 	}
 
-	fmt.Println(totalSand)
-}
-
-func main() {
-	inputPath := flag.String("input", "input.txt", "Path to the input file")
-	part := flag.Int("part", 1, "Part number of the AoC challenge")
-
-	flag.Parse()
-
-	if *part != 1 && *part != 2 {
-		errexit.HandleArgsError(fmt.Errorf("no part %v exists in challenge", *part))
-	}
-
-	solve(*inputPath, *part)
+	return totalSand
 }

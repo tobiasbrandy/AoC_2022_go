@@ -1,9 +1,7 @@
-package main
+package day15
 
 import (
 	"errors"
-	"flag"
-	"fmt"
 	"regexp"
 
 	"github.com/tobiasbrandy/AoC_2022_go/internal/errexit"
@@ -25,12 +23,12 @@ func parseSensorData(sensorData string) (sensor, beacon pos.D2) {
 	return sensor, beacon
 }
 
-func part1(filePath string) {
+func Part1(inputPath string) any {
 	const rowY int = 2000000
 
 	invalidXSet := set.Set[int]{}
 
-	fileline.ForEach(filePath, errexit.HandleScanError, func(line string) {
+	fileline.ForEach(inputPath, errexit.HandleScanError, func(line string) {
 		sensor, beacon := parseSensorData(line)
 
 		dist := sensor.Distance1(beacon)
@@ -45,7 +43,7 @@ func part1(filePath string) {
 		}
 	})
 
-	fmt.Println(invalidXSet.Len())
+	return invalidXSet.Len()
 }
 
 type SensorArea struct {
@@ -100,10 +98,10 @@ func emptyPos(areas []SensorArea, lowerLim, upperLim int) pos.D2 {
 	for _, area := range areas {
 		perimeter := make(chan pos.D2)
 		go area.Perimeter(perimeter)
-		for pos := range perimeter {
-			inBounds := pos.X >= lowerLim && pos.X <= upperLim && pos.Y >= lowerLim && pos.Y <= upperLim
-			if inBounds && !isInAnyArea(areas, pos) {
-				return pos
+		for p := range perimeter {
+			inBounds := p.X >= lowerLim && p.X <= upperLim && p.Y >= lowerLim && p.Y <= upperLim
+			if inBounds && !isInAnyArea(areas, p) {
+				return p
 			}
 		}
 	}
@@ -112,7 +110,7 @@ func emptyPos(areas []SensorArea, lowerLim, upperLim int) pos.D2 {
 	return pos.D2{}
 }
 
-func part2(filePath string) {
+func Part2(inputPath string) any {
 	const (
 		lowerLim int = 0
 		upperLim int = 4000000
@@ -123,7 +121,7 @@ func part2(filePath string) {
 
 	var areas []SensorArea
 
-	fileline.ForEach(filePath, errexit.HandleScanError, func(line string) {
+	fileline.ForEach(inputPath, errexit.HandleScanError, func(line string) {
 		sensor, beacon := parseSensorData(line)
 
 		dist := sensor.Distance1(beacon)
@@ -133,21 +131,5 @@ func part2(filePath string) {
 	beaconPos := emptyPos(areas, lowerLim, upperLim)
 	freq := freqX*beaconPos.X + freqY*beaconPos.Y
 
-	fmt.Println(freq)
-}
-
-func main() {
-	inputPath := flag.String("input", "input.txt", "Path to the input file")
-	part := flag.Int("part", 1, "Part number of the AoC challenge")
-
-	flag.Parse()
-
-	switch *part {
-	case 1:
-		part1(*inputPath)
-	case 2:
-		part2(*inputPath)
-	default:
-		errexit.HandleArgsError(fmt.Errorf("no part %v exists in challenge", *part))
-	}
+	return freq
 }
