@@ -49,18 +49,18 @@ func part1(filePath string) {
 		}
 	}
 
-		// Right to left
-		for row := 0; row < rows; row++ {
-			maxTree := -1
-			for col := cols-1; col >= 0; col-- {
-				tree := trees[row][col]
+	// Right to left
+	for row := 0; row < rows; row++ {
+		maxTree := -1
+		for col := cols - 1; col >= 0; col-- {
+			tree := trees[row][col]
 
-				if tree > maxTree {
-					visible[row][col] = true
-					maxTree = tree
-				}
+			if tree > maxTree {
+				visible[row][col] = true
+				maxTree = tree
 			}
 		}
+	}
 
 	// Up to down
 	for col := 0; col < cols; col++ {
@@ -78,7 +78,7 @@ func part1(filePath string) {
 	// Down to up
 	for col := 0; col < cols; col++ {
 		maxTree := -1
-		for row := rows-1; row >= 0; row-- {
+		for row := rows - 1; row >= 0; row-- {
 			tree := trees[row][col]
 
 			if tree > maxTree {
@@ -111,9 +111,9 @@ func part2(filePath string) {
 	for row := range trees {
 		for col := range trees[0] {
 			height := trees[row][col]
-			
+
 			right := 0
-			for colRight := col+1; colRight < cols; colRight++ {
+			for colRight := col + 1; colRight < cols; colRight++ {
 				right++
 				if height <= trees[row][colRight] {
 					break
@@ -121,7 +121,7 @@ func part2(filePath string) {
 			}
 
 			left := 0
-			for colLeft := col-1; colLeft >= 0; colLeft-- {
+			for colLeft := col - 1; colLeft >= 0; colLeft-- {
 				left++
 				if height <= trees[row][colLeft] {
 					break
@@ -129,7 +129,7 @@ func part2(filePath string) {
 			}
 
 			down := 0
-			for rowDown := row+1; rowDown < rows; rowDown++ {
+			for rowDown := row + 1; rowDown < rows; rowDown++ {
 				down++
 				if height <= trees[rowDown][col] {
 					break
@@ -137,7 +137,7 @@ func part2(filePath string) {
 			}
 
 			up := 0
-			for rowUp := row-1; rowUp >= 0; rowUp-- {
+			for rowUp := row - 1; rowUp >= 0; rowUp-- {
 				up++
 				if height <= trees[rowUp][col] {
 					break
