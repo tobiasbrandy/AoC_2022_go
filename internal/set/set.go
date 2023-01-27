@@ -34,6 +34,16 @@ func (set Set[T]) Len() int {
 	return len(set)
 }
 
+func (set Set[T]) Copy() Set[T] {
+	ret := New[T](set.Len())
+
+	for e := range set {
+		ret.Add(e)
+	}
+
+	return ret
+}
+
 func (set Set[T]) String() string {
 	var sb strings.Builder
 
