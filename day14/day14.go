@@ -73,11 +73,11 @@ func Solve(inputPath string, part int) any {
 				// Sand hit floor
 				rockSet.Add(curr)
 				break
-			} else if test := (pos.New2D(curr.X, curr.Y+1)); !rockSet.Contains(test) {
+			} else if test := pos.New2D(curr.X, curr.Y+1); !rockSet.Contains(test) {
 				curr = test
-			} else if test := (pos.New2D(curr.X-1, curr.Y+1)); !rockSet.Contains(test) {
+			} else if test := pos.New2D(curr.X-1, curr.Y+1); !rockSet.Contains(test) {
 				curr = test
-			} else if test := (pos.New2D(curr.X+1, curr.Y+1)); !rockSet.Contains(test) {
+			} else if test := pos.New2D(curr.X+1, curr.Y+1); !rockSet.Contains(test) {
 				curr = test
 			} else {
 				// Put sand to rest as rock
