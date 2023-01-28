@@ -13,4 +13,3 @@ func Int(s string) int {
 	}
 	return n
 }
-

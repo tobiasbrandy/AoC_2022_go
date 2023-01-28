@@ -12,7 +12,7 @@ func HandleError(err error, exitCode int) {
 
 func HandleArgsError(err error) {
 	HandleError(err, 1)
-} 
+}
 
 func HandleScanError(err error) {
 	HandleError(err, 2)

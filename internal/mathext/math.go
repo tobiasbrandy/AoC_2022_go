@@ -1,6 +1,9 @@
 package mathext
 
-import "golang.org/x/exp/constraints"
+import (
+	"golang.org/x/exp/constraints"
+	"math"
+)
 
 func IntAbs[T constraints.Signed](x T) T {
 	if x < 0 {
