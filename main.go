@@ -45,7 +45,7 @@ func PartsSolver(part1, part2 func(string) any) AoCSolver {
 	}
 }
 
-var DaySolvers = []AoCSolver{
+var DaySolvers = [...]AoCSolver{
 	day1.Solve,
 	day2.Solve,
 	PartsSolver(day3.Part1, day3.Part2),
