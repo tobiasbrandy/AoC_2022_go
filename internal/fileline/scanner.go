@@ -12,6 +12,13 @@ func ForEach(filePath string, errHandler func(error), f func(string)) {
 	scanner.ForEach(f)
 }
 
+func ForEachN(filePath string, errHandler func(error), n int, f func(string)) {
+	scanner := NewScanner(filePath, errHandler)
+	defer scanner.Close()
+
+	scanner.ForEachN(n, f)
+}
+
 func ForEachSet(filePath string, errHandler func(error), f func([]string)) {
 	scanner := NewScanner(filePath, errHandler)
 	defer scanner.Close()
@@ -59,7 +66,11 @@ func NewScanner(filePath string, errHandler func(error)) *Scanner {
 }
 
 func (scanner *Scanner) Close() {
-	scanner.file.Close()
+	if err := scanner.file.Close(); err != nil {
+		if scanner.errHandler != nil {
+			scanner.errHandler(err)
+		}
+	}
 }
 
 // Line functions
