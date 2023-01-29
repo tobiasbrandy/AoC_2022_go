@@ -22,3 +22,13 @@ func Sign[T constraints.Signed | constraints.Unsigned | constraints.Float](x T) 
 		return 0
 	}
 }
+
+func IntMax(is ...int) int {
+	max := math.MinInt
+	for _, i := range is {
+		if i > max {
+			max = i
+		}
+	}
+	return max
+}
