@@ -11,7 +11,7 @@ func NamedCaptureGroups(regexp *regexp.Regexp, s string) map[string]string {
 
 	ret := make(map[string]string, l-1)
 	for i, name := range regexp.SubexpNames() {
-		if name != "" {
+		if name != "" && match[i] != "" {
 			ret[name] = match[i]
 		}
 	}
