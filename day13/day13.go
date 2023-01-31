@@ -44,15 +44,16 @@ type Packet []byte
 
 func (packet Packet) ParseInt() (n, len int) {
 	// Only for small integers that fit int type.
+	p := packet
 	neg := false
 
-	if packet[0] == '-' || packet[0] == '+' {
-		neg = packet[0] == '-'
-		packet = packet[1:]
+	if p[0] == '-' || p[0] == '+' {
+		neg = p[0] == '-'
+		p = p[1:]
 		len++
 	}
 
-	for _, ch := range packet {
+	for _, ch := range p {
 		if ch < '0' || ch > '9' {
 			break
 		}
