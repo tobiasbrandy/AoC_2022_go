@@ -17,6 +17,7 @@ import (
 	"github.com/tobiasbrandy/AoC_2022_go/day2"
 	"github.com/tobiasbrandy/AoC_2022_go/day20"
 	"github.com/tobiasbrandy/AoC_2022_go/day21"
+	"github.com/tobiasbrandy/AoC_2022_go/day23"
 	"github.com/tobiasbrandy/AoC_2022_go/day3"
 	"github.com/tobiasbrandy/AoC_2022_go/day4"
 	"github.com/tobiasbrandy/AoC_2022_go/day5"
@@ -70,6 +71,8 @@ var DaySolvers = [...]AoCSolver{
 	PartsSolver(day19.Part1, day19.Part2),
 	day20.Solve,
 	PartsSolver(day21.Part1, day21.Part2),
+	NotImplementedSolver(),
+	PartsSolver(day23.Part1, day23.Part2),
 }
 
 func main() {
