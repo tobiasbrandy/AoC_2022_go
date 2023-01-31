@@ -4,22 +4,22 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	day1 "github.com/tobiasbrandy/AoC_2022_go/Day1"
-	day10 "github.com/tobiasbrandy/AoC_2022_go/Day10"
-	day11 "github.com/tobiasbrandy/AoC_2022_go/Day11"
-	day12 "github.com/tobiasbrandy/AoC_2022_go/Day12"
-	day13 "github.com/tobiasbrandy/AoC_2022_go/Day13"
-	day14 "github.com/tobiasbrandy/AoC_2022_go/Day14"
-	day15 "github.com/tobiasbrandy/AoC_2022_go/Day15"
-	day17 "github.com/tobiasbrandy/AoC_2022_go/Day17"
-	day2 "github.com/tobiasbrandy/AoC_2022_go/Day2"
-	day3 "github.com/tobiasbrandy/AoC_2022_go/Day3"
-	day4 "github.com/tobiasbrandy/AoC_2022_go/Day4"
-	day5 "github.com/tobiasbrandy/AoC_2022_go/Day5"
-	day6 "github.com/tobiasbrandy/AoC_2022_go/Day6"
-	day7 "github.com/tobiasbrandy/AoC_2022_go/Day7"
-	day8 "github.com/tobiasbrandy/AoC_2022_go/Day8"
-	day9 "github.com/tobiasbrandy/AoC_2022_go/Day9"
+	"github.com/tobiasbrandy/AoC_2022_go/day1"
+	"github.com/tobiasbrandy/AoC_2022_go/day10"
+	"github.com/tobiasbrandy/AoC_2022_go/day11"
+	"github.com/tobiasbrandy/AoC_2022_go/day12"
+	"github.com/tobiasbrandy/AoC_2022_go/day13"
+	"github.com/tobiasbrandy/AoC_2022_go/day14"
+	"github.com/tobiasbrandy/AoC_2022_go/day15"
+	"github.com/tobiasbrandy/AoC_2022_go/day17"
+	"github.com/tobiasbrandy/AoC_2022_go/day2"
+	"github.com/tobiasbrandy/AoC_2022_go/day3"
+	"github.com/tobiasbrandy/AoC_2022_go/day4"
+	"github.com/tobiasbrandy/AoC_2022_go/day5"
+	"github.com/tobiasbrandy/AoC_2022_go/day6"
+	"github.com/tobiasbrandy/AoC_2022_go/day7"
+	"github.com/tobiasbrandy/AoC_2022_go/day8"
+	"github.com/tobiasbrandy/AoC_2022_go/day9"
 	"github.com/tobiasbrandy/AoC_2022_go/internal/errexit"
 	"time"
 )
@@ -67,10 +67,9 @@ var DaySolvers = []AoCSolver{
 func main() {
 	day := flag.Int("day", 0, "AoC challenge day number.")
 	part := flag.Int("part", 1, "AoC challenge part number. Default: 1.")
-	inputPath := flag.String("input", "", "Path to the input file. Default: `Day{day}/input.txt`.")
+	inputPath := flag.String("input", "", "Path to the input file. Default: `day{day}/input.txt`.")
 	takeTime := flag.Bool("time", false, "Print execution time")
-	test := flag.Bool("test", false, "Ignore `input` parameter and use `Day{day}/test.txt` as input.")
-
+	test := flag.Bool("test", false, "Ignore `input` parameter and use `day{day}/test.txt` as input.")
 	flag.Parse()
 
 	if *day < 1 || *day > len(DaySolvers) {
@@ -82,9 +81,9 @@ func main() {
 	}
 
 	if *test {
-		*inputPath = fmt.Sprintf("Day%d/test.txt", *day)
+		*inputPath = fmt.Sprintf("day%d/test.txt", *day)
 	} else if *inputPath == "" {
-		*inputPath = fmt.Sprintf("Day%d/input.txt", *day)
+		*inputPath = fmt.Sprintf("day%d/input.txt", *day)
 	}
 
 	t := time.Now()
