@@ -25,6 +25,16 @@ func (p D2) Neighbours4() [4]D2 {
 	}
 }
 
+func (p D2) Neighbours5() [5]D2 {
+	return [...]D2{
+		{p.X - 1, p.Y},
+		{p.X + 1, p.Y},
+		p,
+		{p.X, p.Y - 1},
+		{p.X, p.Y + 1},
+	}
+}
+
 func (p D2) Neighbours8() [8]D2 {
 	return [...]D2{
 		{p.X - 1, p.Y - 1},
@@ -33,6 +43,22 @@ func (p D2) Neighbours8() [8]D2 {
 
 		{p.X, p.Y - 1},
 		// {p.X, p.Y}, Me
+		{p.X, p.Y + 1},
+
+		{p.X + 1, p.Y - 1},
+		{p.X + 1, p.Y},
+		{p.X + 1, p.Y + 1},
+	}
+}
+
+func (p D2) Neighbours9() [9]D2 {
+	return [...]D2{
+		{p.X - 1, p.Y - 1},
+		{p.X - 1, p.Y},
+		{p.X - 1, p.Y + 1},
+
+		{p.X, p.Y - 1},
+		p,
 		{p.X, p.Y + 1},
 
 		{p.X + 1, p.Y - 1},
