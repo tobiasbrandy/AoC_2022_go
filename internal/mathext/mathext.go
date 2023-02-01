@@ -32,3 +32,8 @@ func IntMax(is ...int) int {
 	}
 	return max
 }
+
+// Mod is like %, but always returns a positive number or zero
+func Mod(x, m int) int {
+	return (x%m + m) % m
+}
