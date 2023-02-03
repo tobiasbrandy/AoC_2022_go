@@ -11,6 +11,7 @@ import (
 	"github.com/tobiasbrandy/AoC_2022_go/day13"
 	"github.com/tobiasbrandy/AoC_2022_go/day14"
 	"github.com/tobiasbrandy/AoC_2022_go/day15"
+	"github.com/tobiasbrandy/AoC_2022_go/day16"
 	"github.com/tobiasbrandy/AoC_2022_go/day17"
 	"github.com/tobiasbrandy/AoC_2022_go/day18"
 	"github.com/tobiasbrandy/AoC_2022_go/day19"
@@ -66,7 +67,7 @@ var DaySolvers = [...]AoCSolver{
 	PartsSolver(day13.Part1, day13.Part2),
 	day14.Solve,
 	PartsSolver(day15.Part1, day15.Part2),
-	NotImplementedSolver(), // Day 16
+	PartsSolver(day16.Part1, day16.Part2),
 	day17.Solve,
 	PartsSolver(day18.Part1, day18.Part2),
 	PartsSolver(day19.Part1, day19.Part2),
