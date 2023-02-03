@@ -2,6 +2,8 @@ package set
 
 import (
 	"fmt"
+	"github.com/tobiasbrandy/AoC_2022_go/internal/hashext"
+	"io"
 	"strings"
 )
 
@@ -42,6 +44,28 @@ func (set Set[T]) Copy() Set[T] {
 	}
 
 	return ret
+}
+
+func (set Set[T]) Diff(o Set[T]) Set[T] {
+	ret := New[T](set.Len())
+
+	for e := range set {
+		if !o.Contains(e) {
+			ret.Add(e)
+		}
+	}
+
+	return ret
+}
+
+func (set Set[T]) Disjoint(o Set[T]) bool {
+	return set.Diff(o).Len() == set.Len()
+}
+
+func (set Set[T]) Hash(h io.Writer) {
+	for v := range set {
+		hashext.HashAny(h, v)
+	}
 }
 
 func (set Set[T]) String() string {
