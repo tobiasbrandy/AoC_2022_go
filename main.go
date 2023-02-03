@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"flag"
 	"fmt"
 	"github.com/tobiasbrandy/AoC_2022_go/day1"
@@ -18,6 +17,7 @@ import (
 	"github.com/tobiasbrandy/AoC_2022_go/day2"
 	"github.com/tobiasbrandy/AoC_2022_go/day20"
 	"github.com/tobiasbrandy/AoC_2022_go/day21"
+	"github.com/tobiasbrandy/AoC_2022_go/day22"
 	"github.com/tobiasbrandy/AoC_2022_go/day23"
 	"github.com/tobiasbrandy/AoC_2022_go/day24"
 	"github.com/tobiasbrandy/AoC_2022_go/day3"
@@ -32,11 +32,6 @@ import (
 )
 
 type AoCSolver func(string, int) any
-
-func NotImplementedSolver() AoCSolver {
-	errexit.HandleMainError(errors.New("not implemented"))
-	return nil
-}
 
 func PartsSolver(part1, part2 func(string) any) AoCSolver {
 	return func(inputPath string, part int) any {
@@ -73,7 +68,7 @@ var DaySolvers = [...]AoCSolver{
 	PartsSolver(day19.Part1, day19.Part2),
 	day20.Solve,
 	PartsSolver(day21.Part1, day21.Part2),
-	NotImplementedSolver(),
+	PartsSolver(day22.Part1, day22.Part2),
 	PartsSolver(day23.Part1, day23.Part2),
 	PartsSolver(day24.Part1, day24.Part2),
 }
