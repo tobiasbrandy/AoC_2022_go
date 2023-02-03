@@ -255,7 +255,7 @@ func (bs *BoardSurface) Hash(h io.Writer) {
 
 	l := bs.board.Len()
 	for i := 0; i < l; i++ {
-		hashext.HashNum(h, bs.board.At(i))
+		hashext.HashNumArr(h, bs.board.At(i))
 	}
 }
 
